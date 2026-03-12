@@ -14,7 +14,6 @@ class BookListCreate(APIView):
             queryset = queryset.filter(
                 Q(title__icontains=search_query) | Q(author__icontains=search_query)
             )
-            
         # Price filtering
         min_price = request.query_params.get('min_price')
         max_price = request.query_params.get('max_price')
@@ -27,8 +26,7 @@ class BookListCreate(APIView):
             try:
                 queryset = queryset.filter(price__lte=float(max_price))
             except ValueError:
-                pass
-                
+                pass     
         # Sorting
         sort_by = request.query_params.get('sort')
         if sort_by == 'price_asc':

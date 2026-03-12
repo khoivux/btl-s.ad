@@ -57,6 +57,20 @@ services:
     volumes:
       - ./comment-rate-service:/app
 
+  catalog-service:
+    build: ./catalog-service
+    ports:
+      - "8009:8000"
+    volumes:
+      - ./catalog-service:/app
+
+  recommender-ai-service:
+    build: ./recommender-ai-service
+    ports:
+      - "8010:8000"
+    volumes:
+      - ./recommender-ai-service:/app
+
   api-gateway:
     build: ./api_gateway
     ports:
