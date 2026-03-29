@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   customer-service:
+    # image: khoivux21/customer-service:latest
     build: ./customer-service
     ports:
       - "8001:8000"
@@ -9,6 +10,7 @@ services:
       - ./customer-service:/app
 
   book-service:
+    # image: khoivux21/book-service:latest
     build: ./book-service
     ports:
       - "8002:8000"
@@ -16,6 +18,7 @@ services:
       - ./book-service:/app
 
   cart-service:
+    # image: khoivux21/cart-service:latest
     build: ./cart-service
     ports:
       - "8003:8000"
@@ -23,6 +26,7 @@ services:
       - ./cart-service:/app
 
   staff-service:
+    # image: khoivux21/staff-service:latest
     build: ./staff-service
     ports:
       - "8004:8000"
@@ -30,6 +34,7 @@ services:
       - ./staff-service:/app
 
   order-service:
+    # image: khoivux21/order-service:latest
     build: ./order-service
     ports:
       - "8005:8000"
@@ -37,6 +42,7 @@ services:
       - ./order-service:/app
 
   pay-service:
+    # image: khoivux21/pay-service:latest
     build: ./pay-service
     ports:
       - "8006:8000"
@@ -44,6 +50,7 @@ services:
       - ./pay-service:/app
 
   ship-service:
+    # image: khoivux21/ship-service:latest
     build: ./ship-service
     ports:
       - "8007:8000"
@@ -51,6 +58,7 @@ services:
       - ./ship-service:/app
 
   comment-rate-service:
+    # image: khoivux21/comment-rate-service:latest
     build: ./comment-rate-service
     ports:
       - "8008:8006"
@@ -58,6 +66,7 @@ services:
       - ./comment-rate-service:/app
 
   catalog-service:
+    # image: khoivux21/catalog-service:latest
     build: ./catalog-service
     ports:
       - "8009:8000"
@@ -65,6 +74,7 @@ services:
       - ./catalog-service:/app
 
   recommender-ai-service:
+    # image: khoivux21/recommender-ai-service:latest
     build: ./recommender-ai-service
     ports:
       - "8010:8000"
@@ -72,6 +82,7 @@ services:
       - ./recommender-ai-service:/app
 
   api-gateway:
+    # image: khoivux21/api-gateway:latest
     build: ./api_gateway
     ports:
       - "8000:8000"
