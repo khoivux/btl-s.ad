@@ -1,0 +1,11 @@
+[
+{
+  "model": "app.staff",
+  "pk": 1,
+  "fields": {
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin"
+  }
+}
+]

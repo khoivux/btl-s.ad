@@ -13,13 +13,19 @@ class StaffBookManager(APIView):
         # Admin adding a new book
         # Staff check should ideally happen here or at API Gateway
         r = requests.post(f"{BOOK_SERVICE_URL}/books/", json=request.data)
-        return Response(r.json(), status=r.status_code)
+        try:
+            return Response(r.json(), status=r.status_code)
+        except:
+            return Response({"error": r.text}, status=r.status_code)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class StaffBookDetailManager(APIView):
     def put(self, request, pk):
         r = requests.put(f"{BOOK_SERVICE_URL}/books/{pk}/", json=request.data)
-        return Response(r.json(), status=r.status_code)
+        try:
+            return Response(r.json(), status=r.status_code)
+        except:
+            return Response({"error": r.text}, status=r.status_code)
 
     def delete(self, request, pk):
         r = requests.delete(f"{BOOK_SERVICE_URL}/books/{pk}/")

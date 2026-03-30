@@ -1,100 +1,282 @@
 version: '3.8'
 
 services:
+  # --- CUSTOMER ---
+  customer-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: customer_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - customer_data:/var/lib/mysql
+
   customer-service:
-    # image: khoivux21/customer-service:latest
     build: ./customer-service
     ports:
       - "8001:8000"
+    depends_on:
+      - customer-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.mysql
+      - DATABASE_NAME=customer_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=customer-db
+      - DATABASE_PORT=3306
     volumes:
       - ./customer-service:/app
 
+  # --- BOOK ---
+  book-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=book_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5433:5432"
+    volumes:
+      - book_data:/var/lib/postgresql/data
+
   book-service:
-    # image: khoivux21/book-service:latest
     build: ./book-service
     ports:
       - "8002:8000"
+    depends_on:
+      - book-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=book_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=book-db
+      - DATABASE_PORT=5432
     volumes:
       - ./book-service:/app
 
+  # --- CART ---
+  cart-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=cart_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5434:5432"
+    volumes:
+      - cart_data:/var/lib/postgresql/data
+
   cart-service:
-    # image: khoivux21/cart-service:latest
     build: ./cart-service
     ports:
       - "8003:8000"
+    depends_on:
+      - cart-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=cart_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=cart-db
+      - DATABASE_PORT=5432
     volumes:
       - ./cart-service:/app
 
+  # --- STAFF ---
+  staff-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: staff_db
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - staff_data:/var/lib/mysql
+
   staff-service:
-    # image: khoivux21/staff-service:latest
     build: ./staff-service
     ports:
       - "8004:8000"
+    depends_on:
+      - staff-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.mysql
+      - DATABASE_NAME=staff_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=staff-db
+      - DATABASE_PORT=3306
     volumes:
       - ./staff-service:/app
 
+  # --- ORDER ---
+  order-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=order_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5432:5432"
+    volumes:
+      - order_data:/var/lib/postgresql/data
+
   order-service:
-    # image: khoivux21/order-service:latest
     build: ./order-service
     ports:
       - "8005:8000"
+    depends_on:
+      - order-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=order_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=order-db
+      - DATABASE_PORT=5432
     volumes:
       - ./order-service:/app
 
+  # --- PAY ---
+  pay-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=pay_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5435:5432"
+    volumes:
+      - pay_data:/var/lib/postgresql/data
+
   pay-service:
-    # image: khoivux21/pay-service:latest
     build: ./pay-service
     ports:
       - "8006:8000"
+    depends_on:
+      - pay-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=pay_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=pay-db
+      - DATABASE_PORT=5432
     volumes:
       - ./pay-service:/app
 
+  # --- SHIP ---
+  ship-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=ship_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5436:5432"
+    volumes:
+      - ship_data:/var/lib/postgresql/data
+
   ship-service:
-    # image: khoivux21/ship-service:latest
     build: ./ship-service
     ports:
       - "8007:8000"
+    depends_on:
+      - ship-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=ship_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=ship-db
+      - DATABASE_PORT=5432
     volumes:
       - ./ship-service:/app
 
+  # --- COMMENT & RATE ---
+  comment-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=comment_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - "5437:5432"
+    volumes:
+      - comment_data:/var/lib/postgresql/data
+
   comment-rate-service:
-    # image: khoivux21/comment-rate-service:latest
     build: ./comment-rate-service
     ports:
       - "8008:8006"
+    depends_on:
+      - comment-db
+    environment:
+      - DATABASE_ENGINE=django.db.backends.postgresql
+      - DATABASE_NAME=comment_db
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=root
+      - DATABASE_HOST=comment-db
+      - DATABASE_PORT=5432
     volumes:
       - ./comment-rate-service:/app
 
+  # --- CATALOG ---
+  catalog-db:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - catalog_data:/data/db
+
   catalog-service:
-    # image: khoivux21/catalog-service:latest
     build: ./catalog-service
     ports:
       - "8009:8000"
+    depends_on:
+      - catalog-db
+    environment:
+      - MONGO_URL=mongodb://catalog-db:27017/
     volumes:
       - ./catalog-service:/app
 
+  # --- RECOMMENDER AI ---
+  recommender-db:
+    image: mongo:latest
+    ports:
+      - "27019:27017"
+    volumes:
+      - recommender_data:/data/db
+
   recommender-ai-service:
-    # image: khoivux21/recommender-ai-service:latest
     build: ./recommender-ai-service
     ports:
       - "8010:8000"
+    depends_on:
+      - recommender-db
+    environment:
+      - MONGO_URL=mongodb://recommender-db:27017/
     volumes:
       - ./recommender-ai-service:/app
 
+  # --- API GATEWAY ---
   api-gateway:
-    # image: khoivux21/api-gateway:latest
     build: ./api_gateway
     ports:
       - "8000:8000"
     volumes:
       - ./api_gateway:/app
 
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27018:27017"
-    volumes:
-      - mongodb_data:/data/db
-
 volumes:
-  mongodb_data:
+  customer_data:
+  book_data:
+  cart_data:
+  staff_data:
+  order_data:
+  pay_data:
+  ship_data:
+  comment_data:
+  catalog_data:
+  recommender_data:

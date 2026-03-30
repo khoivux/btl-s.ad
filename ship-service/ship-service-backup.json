@@ -1,0 +1,46 @@
+[
+{
+  "model": "app.shippingmethod",
+  "pk": "economy",
+  "fields": {
+    "name": "Giao h├áng Tiß║┐t kiß╗çm",
+    "description": "5 - 7 ng├áy",
+    "base_fee": 1.0,
+    "free_threshold": 30.0,
+    "estimated_days": 7
+  }
+},
+{
+  "model": "app.shippingmethod",
+  "pk": "fast",
+  "fields": {
+    "name": "Giao h├áng Nhanh",
+    "description": "1 - 2 ng├áy",
+    "base_fee": 5.0,
+    "free_threshold": 150.0,
+    "estimated_days": 2
+  }
+},
+{
+  "model": "app.shippingmethod",
+  "pk": "instant",
+  "fields": {
+    "name": "Giao h├áng Hß╗Åa tß╗æc",
+    "description": "2 - 4 giß╗¥ (TP.HCM)",
+    "base_fee": 10.0,
+    "free_threshold": null,
+    "estimated_days": 0
+  }
+},
+{
+  "model": "app.shippingmethod",
+  "pk": "standard",
+  "fields": {
+    "name": "Giao h├áng Ti├¬u chuß║⌐n",
+    "description": "3 - 5 ng├áy",
+    "base_fee": 2.5,
+    "free_threshold": 70.0,
+    "estimated_days": 4
+  }
+}
+]

@@ -1,0 +1,365 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$VGlJPyq1i7K3x0MyD7eTwv$pJlgaqZ5Xt9COCWzsor0KImdgMIiBokernMm6o0TXoA=",
+    "last_login": "2026-03-21T15:19:08.413Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@example.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-05T04:19:13.534Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "234qg92lztjd33m4t5xyspdmoyoeb13y",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w3dh3:rZvHJkCPKUWYIjalKD3u6NNXIRUcqPQi9ivRfiTRt7s",
+    "expire_date": "2026-04-03T17:31:29.933Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "25t9erxa6wlod70714gmbpgvspiwjx8r",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w31oE:UqEf0A_aYPBAoDJuhJXQzAEhJgRfyV9aT-7i85v6oKQ",
+    "expire_date": "2026-04-02T01:04:22.839Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2nsg6cyluz0ie6chksyemeh2abq2du57",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w32Fd:uPZDEUOOnM9Io2UtiAYzy58mKA7F8znWG92SLaH0OMs",
+    "expire_date": "2026-04-02T01:32:41.499Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "6acrapkvftxglys61q104ujv9zrc8q44",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAUBf-la9P00gfg0j3f0NyXgpqSUFgZ_11JWOj2zMx5mYzbOuat6pInMWcD5vS7EfJDyw7kjuU2W57Lukxkd8UetNphFn1eDvfvYMQ6fusAyuSi8y2kXjFy2zu4KnUpiiL5JoB4SJyYIkMfWkraIbCDJohwMO8P3hE36Q:1w0eDj:5Nl7D4g2p2NyRs6CYgQXqmjOhz4xYHbenlra_kguihI",
+    "expire_date": "2026-03-26T11:28:51.854Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "a78depvc0vlkh9kert0l769zz06i6t7p",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAUBf-la9P00gfg0j3f0NyXgpqSUFgZ_11JWOj2zMx5mYzbOuat6pInMWcD5vS7EfJDyw7kjuU2W57Lukxkd8UetNphFn1eDvfvYMQ6fusAyuSi8y2kXjFy2zu4KnUpiiL5JoB4SJyYIkMfWkraIbCDJohwMO8P3hE36Q:1w0eFs:n8McqP4WZVEvUM52RQ4oejaw8qRVYjeAUbvquiXOgwU",
+    "expire_date": "2026-03-26T11:31:04.923Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "i8tlojc3sgrevkrhlwmi0spb7eyjmrj7",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w32Ul:eiqRm6dKbsm9LPlyiF3iPY6vhzsZKXNpAqgmgSc-VtY",
+    "expire_date": "2026-04-02T01:48:19.347Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "kd01rwneq3mjygy47i7jpk9qdycnkvm3",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w3sUr:ZwCzl-m7RSxVvu7kFWUI1SU1M051qqNtMvvQIM0-Cew",
+    "expire_date": "2026-04-04T09:19:53.110Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "pgxvxlf08epumoc6bc32f55xwd92wrxo",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAUBf-la9P00gfg0j3f0NyXgpqSUFgZ_11JWOj2zMx5mYzbOuat6pInMWcD5vS7EfJDyw7kjuU2W57Lukxkd8UetNphFn1eDvfvYMQ6fusAyuSi8y2kXjFy2zu4KnUpiiL5JoB4SJyYIkMfWkraIbCDJohwMO8P3hE36Q:1w0N7K:DvXX0Y2DQqaffQmPfgA7fl8SgEXeXAOSTdgn2z5yBas",
+    "expire_date": "2026-03-25T17:13:06.948Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "uotu7k7hrh8vg2rod6sso0qt9pzxibe4",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAUBf-la9P00gfg0j3f0NyXgpqSUFgZ_11JWOj2zMx5mYzbOuat6pInMWcD5vS7EfJDyw7kjuU2W57Lukxkd8UetNphFn1eDvfvYMQ6fusAyuSi8y2kXjFy2zu4KnUpiiL5JoB4SJyYIkMfWkraIbCDJohwMO8P3hE36Q:1w0LY9:GTri_OQW8OeRzTZe-_vvKEKwkxKMFpsxersyORv-STI",
+    "expire_date": "2026-03-25T15:32:41.790Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xoo53vkp8nsp9kghotifc8m2wua0beew",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2pABGQou3XsGMjATqRqalHZlvLtt0oVu_3vvv1Widalp7TKnkdVFGXX63TKVp7Qd8IPafdJlass8Zr0r-qBd3yaW1_Vw_w4q9brVkCOEMhCSL-wdYmQ0QEXOGV2IJF7QcYAINls0kSwPG5WSmSmCU58v4-Y4WA:1w3y6W:QiJ1nOcl9LgNMFQCkUTGVkvwPT7TZ9-gj5mADZeKeLE",
+    "expire_date": "2026-04-04T15:19:08.476Z"
+  }
+},
+{
+  "model": "app.customer",
+  "pk": 1,
+  "fields": {
+    "name": "Kh├┤i V┼⌐",
+    "email": "vt.khoi2110@gmail.com",
+    "phone_number": null,
+    "password": "12345"
+  }
+},
+{
+  "model": "app.customer",
+  "pk": 2,
+  "fields": {
+    "name": "V┼⌐ Trß╗ìng Kh├┤i",
+    "email": "khoi@gmail.com",
+    "phone_number": "0965827948",
+    "password": "12345"
+  }
+},
+{
+  "model": "app.membershiplevel",
+  "pk": 1,
+  "fields": {
+    "name": "Bronze",
+    "min_points": 0,
+    "discount_percentage": 0
+  }
+},
+{
+  "model": "app.membershiplevel",
+  "pk": 2,
+  "fields": {
+    "name": "Silver",
+    "min_points": 500,
+    "discount_percentage": 5
+  }
+},
+{
+  "model": "app.membershiplevel",
+  "pk": 3,
+  "fields": {
+    "name": "Gold",
+    "min_points": 2000,
+    "discount_percentage": 10
+  }
+},
+{
+  "model": "app.membershiplevel",
+  "pk": 4,
+  "fields": {
+    "name": "Platinum",
+    "min_points": 10000,
+    "discount_percentage": 15
+  }
+},
+{
+  "model": "app.loyaltywallet",
+  "pk": 1,
+  "fields": {
+    "customer": 1,
+    "usable_points": 0,
+    "accumulated_points": 0,
+    "current_level": 1
+  }
+},
+{
+  "model": "app.loyaltywallet",
+  "pk": 2,
+  "fields": {
+    "customer": 2,
+    "usable_points": 290,
+    "accumulated_points": 390,
+    "current_level": 1
+  }
+},
+{
+  "model": "app.pointtransaction",
+  "pk": 1,
+  "fields": {
+    "wallet": 2,
+    "amount": 300,
+    "transaction_type": "EARN",
+    "description": "Reward for order #9",
+    "created_at": "2026-03-19T01:30:28.056Z"
+  }
+},
+{
+  "model": "app.pointtransaction",
+  "pk": 2,
+  "fields": {
+    "wallet": 2,
+    "amount": -100,
+    "transaction_type": "EARN",
+    "description": "Exchanged points for voucher THAYQUE123",
+    "created_at": "2026-03-19T01:46:30.517Z"
+  }
+},
+{
+  "model": "app.pointtransaction",
+  "pk": 3,
+  "fields": {
+    "wallet": 2,
+    "amount": -100,
+    "transaction_type": "SPEND",
+    "description": "Exchanged points for voucher THAYQUE123",
+    "created_at": "2026-03-19T02:01:57.470Z"
+  }
+},
+{
+  "model": "app.pointtransaction",
+  "pk": 4,
+  "fields": {
+    "wallet": 2,
+    "amount": 180,
+    "transaction_type": "EARN",
+    "description": "Reward for order #21",
+    "created_at": "2026-03-21T09:37:29.728Z"
+  }
+},
+{
+  "model": "app.pointtransaction",
+  "pk": 5,
+  "fields": {
+    "wallet": 2,
+    "amount": 10,
+    "transaction_type": "EARN",
+    "description": "Reward for order #25",
+    "created_at": "2026-03-21T12:15:33.578Z"
+  }
+},
+{
+  "model": "app.address",
+  "pk": 2,
+  "fields": {
+    "customer": 2,
+    "name": "Home",
+    "recipient_name": "Kh├┤i V┼⌐",
+    "recipient_phone": "0965827948",
+    "street": "9b 250 Kim giang",
+    "city": "Ha Noi",
+    "country": "Vietnam",
+    "postal_code": "",
+    "is_default": true
+  }
+},
+{
+  "model": "app.address",
+  "pk": 3,
+  "fields": {
+    "customer": 2,
+    "name": "Office",
+    "recipient_name": "Kh├┤i V┼⌐",
+    "recipient_phone": "0965827948",
+    "street": "km 10 Tran Phu Ha Dong",
+    "city": "Ha Noi",
+    "country": "Vietnam",
+    "postal_code": "",
+    "is_default": false
+  }
+},
+{
+  "model": "app.address",
+  "pk": 4,
+  "fields": {
+    "customer": 2,
+    "name": "HOme",
+    "recipient_name": "kai",
+    "recipient_phone": "0999999",
+    "street": "9b 250",
+    "city": "Ha Noi",
+    "country": "Vietnam",
+    "postal_code": "",
+    "is_default": false
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-03-12T11:29:39.102Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "customer"
+    ],
+    "object_id": "2",
+    "object_repr": "User1 (khoi@gmail.com)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Phone number\"]}}, {\"added\": {\"name\": \"address\", \"object\": \"[Home] 9b 250 Kim giang, Ha Noi\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-03-12T11:31:14.914Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "customer"
+    ],
+    "object_id": "2",
+    "object_repr": "V┼⌐ Trß╗ìng Kh├┤i (khoi@gmail.com)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Name\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-03-19T01:35:50.671Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "pointtransaction"
+    ],
+    "object_id": "1",
+    "object_repr": "EARN 300 - V┼⌐ Trß╗ìng Kh├┤i",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Amount\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2026-03-19T01:36:05.575Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "loyaltywallet"
+    ],
+    "object_id": "2",
+    "object_repr": "Wallet for khoi@gmail.com - 300 pts",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Usable points\", \"Accumulated points\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-03-19T01:36:54.951Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "loyaltywallet"
+    ],
+    "object_id": "2",
+    "object_repr": "Wallet for khoi@gmail.com - 300 pts",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Current level\"]}}]"
+  }
+}
+]

@@ -21,9 +21,16 @@ def sync_all():
             book_id = book.get('id')
             if not book_id:
                 continue
+                
+            # Remove fields that conflict with MongoDB reserved fields
+            if 'language' in book:
+                del book['language']
+                
             book['_id'] = book_id
-            del book['id']
-            books_collection.update_one({'_id': book_id}, {'$set': book}, upsert=True)
+            if 'id' in book:
+                del book['id']
+            
+            books_collection.replace_one({'_id': book_id}, book, upsert=True)
             count += 1
             
         print(f"Synced {count} books from book-service to MongoDB.")

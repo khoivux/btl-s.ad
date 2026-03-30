@@ -1,0 +1,76 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$gBYms8YEobbuxvdDFdtYOV$C/YXCVDPy8PeQu41EgF2xsihi6mWrRVsLgooqBb0nuI=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@example.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-05T04:18:31.841Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "app.cart",
+  "pk": 1,
+  "fields": {
+    "customer_id": 1
+  }
+},
+{
+  "model": "app.cart",
+  "pk": 2,
+  "fields": {
+    "customer_id": 1
+  }
+},
+{
+  "model": "app.cart",
+  "pk": 3,
+  "fields": {
+    "customer_id": 2
+  }
+},
+{
+  "model": "app.cartitem",
+  "pk": 2,
+  "fields": {
+    "cart": 1,
+    "book_id": 1,
+    "quantity": 3
+  }
+},
+{
+  "model": "app.cartitem",
+  "pk": 3,
+  "fields": {
+    "cart": 1,
+    "book_id": 2,
+    "quantity": 1
+  }
+},
+{
+  "model": "app.cartitem",
+  "pk": 4,
+  "fields": {
+    "cart": 2,
+    "book_id": 2,
+    "quantity": 1
+  }
+},
+{
+  "model": "app.cartitem",
+  "pk": 5,
+  "fields": {
+    "cart": 2,
+    "book_id": 3,
+    "quantity": 1
+  }
+}
+]

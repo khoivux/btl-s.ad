@@ -96,9 +96,7 @@ class BookListCreate(APIView):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # Auto-sync is now handled by model save/delete!
-        return Response(serializer.data, status=201)
-
+            return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
 class BookDetail(APIView):
@@ -116,7 +114,6 @@ class BookDetail(APIView):
             serializer = BookSerializer(book, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                threading.Thread(target=_sync_to_catalog, args=(serializer.data,)).start()
                 return Response(serializer.data)
             return Response(serializer.errors, status=400)
         except Book.DoesNotExist:
@@ -140,10 +137,10 @@ class BookInventoryUpdate(APIView):
     def post(self, request, pk):
         try:
             change = int(request.data.get('change', 0))
-            Book.objects.filter(pk=pk).update(stock=F('stock') + change)
             book = Book.objects.get(pk=pk)
+            book.stock += change
+            book.save()  # Triggers sync via models.py save() hook
             serialized = BookSerializer(book).data
-            # Auto-sync is now handled by model save/delete!
             return Response(serialized)
 
         except Book.DoesNotExist:

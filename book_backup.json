@@ -1,0 +1,1039 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$600000$UR3RL2FGOUrESzfMAaxdXJ$ghgSO3RO3J+4ntCdQImOGIcPgfAlOGk/zUj0mD2pK/0=",
+    "last_login": "2026-03-21T15:35:19.778Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@example.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-05T04:19:48.699Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "1tc6mjz8w1k5zszak6ounkrp7jgr8dre",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8OgVduu83kIEZpGogKe3K-O_apAvd3nPOfYmA21rC1nkJM4mL0OL0u0VMD647oDvWW5Op1XWZo9wVedAup0b8vB7u30HBXr714MaMjATGqThYZNaKALxOCIYJ0RMopcgyWuPyqOMZlTdsOJLPAOL9Afj_OHY:1w3dhD:XNLQXjHKqWo4rHbZcc3DjU2-9nPn3DHBB3ZC-ytzLxI",
+    "expire_date": "2026-04-03T17:31:39.504Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h4g14pur1bjnir2x0qyic9hj1nlxo9w1",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8OgVduu83kIEZpGogKe3K-O_apAvd3nPOfYmA21rC1nkJM4mL0OL0u0VMD647oDvWW5Op1XWZo9wVedAup0b8vB7u30HBXr714MaMjATGqThYZNaKALxOCIYJ0RMopcgyWuPyqOMZlTdsOJLPAOL9Afj_OHY:1w0N7V:uJMhB6iQpbSttAUbNJ-qsIqvn6IP71SLi733O_FGfRY",
+    "expire_date": "2026-03-25T17:13:17.182Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ttspfw5ff9f4s03xv1betnd5hg2ssudc",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8OgVduu83kIEZpGogKe3K-O_apAvd3nPOfYmA21rC1nkJM4mL0OL0u0VMD647oDvWW5Op1XWZo9wVedAup0b8vB7u30HBXr714MaMjATGqThYZNaKALxOCIYJ0RMopcgyWuPyqOMZlTdsOJLPAOL9Afj_OHY:1w3y6k:Ro2cz3-AAYUDcw_RjKPfKaUy1KV-ObzRbSIrYY3v_AU",
+    "expire_date": "2026-04-04T15:19:22.323Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "zke7mnz6j0a1zm5tgcool0x1bi7fprnk",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8OgVduu83kIEZpGogKe3K-O_apAvd3nPOfYmA21rC1nkJM4mL0OL0u0VMD647oDvWW5Op1XWZo9wVedAup0b8vB7u30HBXr714MaMjATGqThYZNaKALxOCIYJ0RMopcgyWuPyqOMZlTdsOJLPAOL9Afj_OHY:1vy0Cf:qdNK7KoYf0j3YtBvzIzerU61sdJRccHnTK4Qxc_DlVM",
+    "expire_date": "2026-03-19T04:20:49.923Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "zy7rmguw1e39ojx9tsh8ekydii8q6vxb",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQRf-FtSE8OgVduu83kIEZpGogKe3K-O_apAvd3nPOfYmA21rC1nkJM4mL0OL0u0VMD647oDvWW5Op1XWZo9wVedAup0b8vB7u30HBXr714MaMjATGqThYZNaKALxOCIYJ0RMopcgyWuPyqOMZlTdsOJLPAOL9Afj_OHY:1w3yMB:1Vg0OPAPUnqnhQLe9H-LL6E4Ei2DU8qBmJNIf2h9i9Y",
+    "expire_date": "2026-04-04T15:35:19.808Z"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 1,
+  "fields": {
+    "name": "Education",
+    "description": "S├ích phß╗Ñc vß╗Ñ hß╗ìc tß║¡p"
+  }
+},
+{
+  "model": "app.category",
+  "pk": 2,
+  "fields": {
+    "name": "Self-Help",
+    "description": ""
+  }
+},
+{
+  "model": "app.category",
+  "pk": 3,
+  "fields": {
+    "name": "Fiction",
+    "description": ""
+  }
+},
+{
+  "model": "app.category",
+  "pk": 4,
+  "fields": {
+    "name": "Technology",
+    "description": ""
+  }
+},
+{
+  "model": "app.category",
+  "pk": 5,
+  "fields": {
+    "name": "Sci-Fi",
+    "description": ""
+  }
+},
+{
+  "model": "app.language",
+  "pk": 1,
+  "fields": {
+    "name": "Tiß║┐ng Viß╗çt",
+    "code": "vi"
+  }
+},
+{
+  "model": "app.language",
+  "pk": 2,
+  "fields": {
+    "name": "Tiß║┐ng Anh",
+    "code": "en"
+  }
+},
+{
+  "model": "app.language",
+  "pk": 3,
+  "fields": {
+    "name": "Tiß║┐ng Nhß║¡t",
+    "code": "ja"
+  }
+},
+{
+  "model": "app.language",
+  "pk": 4,
+  "fields": {
+    "name": "Tiß║┐ng Ph├íp",
+    "code": "fr"
+  }
+},
+{
+  "model": "app.bookformat",
+  "pk": 1,
+  "fields": {
+    "name": "Paperback"
+  }
+},
+{
+  "model": "app.bookformat",
+  "pk": 2,
+  "fields": {
+    "name": "Hardcover"
+  }
+},
+{
+  "model": "app.bookformat",
+  "pk": 3,
+  "fields": {
+    "name": "Ebook"
+  }
+},
+{
+  "model": "app.publisher",
+  "pk": 1,
+  "fields": {
+    "name": "ABC",
+    "address": "abc",
+    "website": null
+  }
+},
+{
+  "model": "app.publisher",
+  "pk": 2,
+  "fields": {
+    "name": "XYZ",
+    "address": "",
+    "website": null
+  }
+},
+{
+  "model": "app.book",
+  "pk": 1,
+  "fields": {
+    "title": "Atomic Habits",
+    "author": "James Clear",
+    "description": "Mß╗Öt cuß╗æn s├ích ─æß╗Öt ph├í cß╗ºa James Clear vß╗ü viß╗çc x├óy dß╗▒ng th├│i quen. T├íc giß║ú tiß║┐t lß╗Ö c├ích nhß╗»ng thay ─æß╗òi cß╗▒c nhß╗Å, ─æ╞░ß╗úc thß╗▒c hiß╗çn nhß║Ñt qu├ín, c├│ thß╗â dß║½n ─æß║┐n nhß╗»ng kß║┐t quß║ú ─æ├íng kinh ngß║íc trong sß╗▒ nghiß╗çp v├á cuß╗Öc sß╗æng. Mß╗Öt hß╗ç thß╗æng thß╗▒c tß║┐ ─æß╗â lß║╖p lß║íi c├íc th├│i quen tß╗æt v├á loß║íi bß╗Å nhß╗»ng th├│i quen xß║Ñu.",
+    "price": "15.19",
+    "stock": 10000,
+    "page_count": 320,
+    "isbn": "9780735211292",
+    "published_date": "2010-03-08",
+    "image_url": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=2574&auto=format&fit=crop",
+    "category": 2,
+    "language": 2,
+    "format": 1,
+    "publisher": 1
+  }
+},
+{
+  "model": "app.book",
+  "pk": 2,
+  "fields": {
+    "title": "The Alchemist",
+    "author": "Paulo Coelho",
+    "description": "T├íc phß║⌐m kinh ─æiß╗ân cß╗ºa Paulo Coelho kß╗â vß╗ü h├ánh tr├¼nh cß╗ºa ch├áng ch─ân cß╗½u Santiago ─æi t├¼m kho b├íu ß╗ƒ Ai Cß║¡p. Cuß╗æn s├ích l├á mß╗Öt b├ái hß╗ìc s├óu sß║»c vß╗ü viß╗çc lß║»ng nghe tr├íi tim, nhß║¡n biß║┐t c├íc t├¡n hiß╗çu v├á d┼⌐ng cß║úm theo ─æuß╗òi \"Vß║¡n mß╗çnh c├í nh├ón\" cß╗ºa mß╗ùi ng╞░ß╗¥i. Mß╗Öt c├óu chuyß╗çn l├ám thay ─æß╗òi h├áng triß╗çu cuß╗Öc ─æß╗¥i tr├¬n thß║┐ giß╗¢i.",
+    "price": "12.99",
+    "stock": 10000,
+    "page_count": 208,
+    "isbn": "9780062315007",
+    "published_date": "2026-03-08",
+    "image_url": "https://images.unsplash.com/photo-1543004471-240a0e96bbf4?q=80&w=2670&auto=format&fit=crop",
+    "category": 3,
+    "language": 2,
+    "format": 1,
+    "publisher": 1
+  }
+},
+{
+  "model": "app.book",
+  "pk": 3,
+  "fields": {
+    "title": "Clean Code",
+    "author": "Robert C. Martin",
+    "description": "\"Kinh th├ính\" d├ánh cho mß╗ìi lß║¡p tr├¼nh vi├¬n cß╗ºa Robert C. Martin (Uncle Bob). Cuß╗æn s├ích cung cß║Ñp c├íc nguy├¬n tß║»c, mß║½u h├¼nh v├á kiß║┐n thß╗⌐c thß╗▒c h├ánh ─æß╗â viß║┐t m├ú nguß╗ôn dß╗à ─æß╗ìc, dß╗à bß║úo tr├¼ v├á hiß╗çu quß║ú. Mß╗Öt nguß╗ôn t├ái liß╗çu v├┤ gi├í ─æß╗â n├óng cao t╞░ duy thiß║┐t kß║┐ phß║ºn mß╗üm v├á kß╗╣ n─âng lß║¡p tr├¼nh chuy├¬n nghiß╗çp.",
+    "price": "24.99",
+    "stock": 9997,
+    "page_count": 464,
+    "isbn": "9780132350884",
+    "published_date": "2008-08-01",
+    "image_url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2698&auto=format&fit=crop",
+    "category": 4,
+    "language": 1,
+    "format": 2,
+    "publisher": 1
+  }
+},
+{
+  "model": "app.book",
+  "pk": 4,
+  "fields": {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "description": "Thi├¬n sß╗¡ thi khoa hß╗ìc viß╗àn t╞░ß╗ƒng v─⌐ ─æß║íi nhß║Ñt mß╗ìi thß╗¥i ─æß║íi cß╗ºa Frank Herbert. C├óu chuyß╗çn xoay quanh h├ánh tr├¼nh cß╗ºa Paul Atreides tr├¬n h├ánh tinh sa mß║íc Arrakis - n╞íi duy nhß║Ñt c├│ H╞░╞íng d╞░ß╗úc (Spice). Cuß╗æn s├ích khai th├íc s├óu sß║»c vß╗ü ch├¡nh trß╗ï, t├┤n gi├ío, sinh th├íi v├á sß╗æ phß║¡n con ng╞░ß╗¥i trong mß╗Öt v┼⌐ trß╗Ñ rß╗Öng lß╗¢n.",
+    "price": "17.50",
+    "stock": 9965,
+    "page_count": 688,
+    "isbn": "9780441172719",
+    "published_date": "1990-09-01",
+    "image_url": "https://images.unsplash.com/photo-1589998059171-988d887df646?q=80&w=2676&auto=format&fit=crop",
+    "category": 3,
+    "language": 2,
+    "format": 1,
+    "publisher": 1
+  }
+},
+{
+  "model": "app.book",
+  "pk": 5,
+  "fields": {
+    "title": "Nh├á giß║ú Kim (bß║ún dß╗ïch)",
+    "author": "Paulo Coelho",
+    "description": "T├íc phß║⌐m kinh ─æiß╗ân cß╗ºa Paulo Coelho kß╗â vß╗ü h├ánh tr├¼nh cß╗ºa ch├áng ch─ân cß╗½u Santiago ─æi t├¼m kho b├íu ß╗ƒ Ai Cß║¡p. Cuß╗æn s├ích l├á mß╗Öt b├ái hß╗ìc s├óu sß║»c vß╗ü viß╗çc lß║»ng nghe tr├íi tim, nhß║¡n biß║┐t c├íc t├¡n hiß╗çu v├á d┼⌐ng cß║úm theo ─æuß╗òi \"Vß║¡n mß╗çnh c├í nh├ón\" cß╗ºa mß╗ùi ng╞░ß╗¥i. Mß╗Öt c├óu chuyß╗çn l├ám thay ─æß╗òi h├áng triß╗çu cuß╗Öc ─æß╗¥i tr├¬n thß║┐ giß╗¢i.",
+    "price": "12.99",
+    "stock": 10000,
+    "page_count": 208,
+    "isbn": "9780062315005",
+    "published_date": "2026-03-08",
+    "image_url": "https://images.unsplash.com/photo-1543004471-240a0e96bbf4?q=80&w=2670&auto=format&fit=crop",
+    "category": 3,
+    "language": 1,
+    "format": 1,
+    "publisher": 1
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2026-03-05T04:21:08.135Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Book object (1)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2026-03-05T04:21:22.381Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "Book object (2)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2026-03-05T04:21:40.770Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Book object (3)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2026-03-20T17:31:52.532Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "4",
+    "object_repr": "Book object (4)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2026-03-20T17:32:02.416Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Book object (3)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2026-03-20T17:32:07.796Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "Book object (2)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2026-03-20T17:32:12.764Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Book object (1)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Stock\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2026-03-21T15:20:41.984Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Author\", \"Description\", \"Page count\", \"Isbn\", \"Published date\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2026-03-21T15:21:22.039Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "The Alchemist",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Author\", \"Description\", \"Page count\", \"Isbn\", \"Published date\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2026-03-21T15:22:04.042Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Clean Code",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Author\", \"Description\", \"Page count\", \"Isbn\", \"Published date\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2026-03-21T15:24:04.488Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "4",
+    "object_repr": "Dune",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Title\", \"Author\", \"Price\", \"Description\", \"Page count\", \"Isbn\", \"Published date\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2026-03-21T15:24:39.658Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Clean Code",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Price\", \"Page count\", \"Published date\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2026-03-21T15:24:54.778Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "The Alchemist",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Price\", \"Page count\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2026-03-21T15:25:11.031Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Price\", \"Page count\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2026-03-21T15:25:24.431Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "category"
+    ],
+    "object_id": "2",
+    "object_repr": "Self-Help",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Name\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2026-03-21T15:25:29.760Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "category"
+    ],
+    "object_id": "1",
+    "object_repr": "Education",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Name\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2026-03-21T15:25:34.001Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "category"
+    ],
+    "object_id": "3",
+    "object_repr": "Fiction",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2026-03-21T15:25:39.305Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "category"
+    ],
+    "object_id": "4",
+    "object_repr": "Technology",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2026-03-21T15:25:46.385Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "category"
+    ],
+    "object_id": "5",
+    "object_repr": "Sci-Fi",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2026-03-21T15:26:48.967Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "language"
+    ],
+    "object_id": "1",
+    "object_repr": "Tiß║┐ng Viß╗çt",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2026-03-21T15:26:58.787Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "language"
+    ],
+    "object_id": "2",
+    "object_repr": "Tiß║┐ng Anh",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2026-03-21T15:27:09.029Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "language"
+    ],
+    "object_id": "3",
+    "object_repr": "Tiß║┐ng Nhß║¡t",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2026-03-21T15:27:14.847Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "language"
+    ],
+    "object_id": "4",
+    "object_repr": "Tiß║┐ng Ph├íp",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2026-03-21T15:27:36.150Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2026-03-21T15:28:36.258Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "5",
+    "object_repr": "Nh├á giß║ú Kim (bß║ún dß╗ïch)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2026-03-21T15:29:11.622Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "bookformat"
+    ],
+    "object_id": "1",
+    "object_repr": "Paperback",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2026-03-21T15:29:15.474Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "bookformat"
+    ],
+    "object_id": "2",
+    "object_repr": "Hardcover",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2026-03-21T15:29:18.623Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "bookformat"
+    ],
+    "object_id": "3",
+    "object_repr": "Ebook",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2026-03-21T15:29:34.290Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "publisher"
+    ],
+    "object_id": "1",
+    "object_repr": "ABC",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2026-03-21T15:29:38.387Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "publisher"
+    ],
+    "object_id": "2",
+    "object_repr": "XYZ",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2026-03-21T15:29:57.456Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "4",
+    "object_repr": "Dune",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Category\", \"Language\", \"Format\", \"Publisher\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2026-03-21T15:30:08.565Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Clean Code",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Category\", \"Language\", \"Format\", \"Publisher\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2026-03-21T15:30:19.506Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "The Alchemist",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Category\", \"Language\", \"Format\", \"Publisher\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2026-03-21T15:30:30.973Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Category\", \"Language\", \"Format\", \"Publisher\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2026-03-21T15:31:21.624Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "5",
+    "object_repr": "Nh├á giß║ú Kim (bß║ún dß╗ïch)",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Format\", \"Publisher\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2026-03-21T15:38:24.788Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "5",
+    "object_repr": "Nh├á giß║ú Kim (bß║ún dß╗ïch)",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2026-03-21T15:38:35.215Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2026-03-21T15:40:45.582Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2026-03-21T15:42:20.679Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "5",
+    "object_repr": "Nh├á giß║ú Kim (bß║ún dß╗ïch)",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2026-03-21T15:42:29.927Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "4",
+    "object_repr": "Dune",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2026-03-21T15:42:33.800Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "3",
+    "object_repr": "Clean Code",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2026-03-21T15:42:37.426Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "2",
+    "object_repr": "The Alchemist",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2026-03-21T15:42:41.383Z",
+    "user": [
+      "admin"
+    ],
+    "content_type": [
+      "app",
+      "book"
+    ],
+    "object_id": "1",
+    "object_repr": "Atomic Habits",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+}
+]
