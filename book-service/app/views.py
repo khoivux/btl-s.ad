@@ -89,8 +89,23 @@ class BookListCreate(APIView):
         else:
             queryset = queryset.order_by('-id')
 
-        serializer = BookSerializer(queryset, many=True)
-        return Response(serializer.data)
+        # Pagination
+        total_count = queryset.count()
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('page_size', 10))
+        
+        start = (page - 1) * page_size
+        end = start + page_size
+        
+        paginated_queryset = queryset[start:end]
+        serializer = BookSerializer(paginated_queryset, many=True)
+        
+        return Response({
+            'results': serializer.data,
+            'total': total_count,
+            'page': page,
+            'page_size': page_size
+        })
 
     def post(self, request):
         serializer = BookSerializer(data=request.data)

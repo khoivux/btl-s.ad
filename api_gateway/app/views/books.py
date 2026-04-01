@@ -18,12 +18,20 @@ class BookListView(BaseProxyView):
     service_url = CATALOG_SERVICE_URL
 
     def get(self, request):
+        page = request.GET.get('page', 1)
+        page_size = 12
+        
         search_query = request.GET.get('search', '')
-        endpoint = "books/"
+        endpoint = f"books/?page={page}&page_size={page_size}"
         r = self.proxy_request(request, endpoint, method="GET")
         
-        data = r.json() if r and r.status_code == 200 else {}
-        books = data.get('results', []) if isinstance(data, dict) else data
+        data = r.json() if r and r.status_code == 200 else {"results": [], "total": 0}
+        books = data.get('results', [])
+        total = data.get('total', 0)
+        
+        import math
+        total_pages = math.ceil(total / page_size)
+        current_page = int(page)
         
         cat_r = requests.get(f"{BOOK_SERVICE_URL}/categories/")
         categories = cat_r.json() if cat_r and cat_r.status_code == 200 else []
@@ -33,17 +41,21 @@ class BookListView(BaseProxyView):
         customer_id = request.session.get('customer_id')
         if customer_id:
             try:
-                # Call AI Recommender Service
+                # Call AI Recommender Service (Keep this separate from pagination)
                 recom_r = requests.get(f"{RECOMMENDER_SERVICE_URL}/api/recommendations/{customer_id}/")
                 if recom_r.status_code == 200:
                     recom_data = recom_r.json()
-                    # We get a list of recommendation objects (with book details)
                     recommended_books = recom_data.get('recommendations', [])
             except Exception as e:
                 print(f"[GATEWAY] Recommender Error: {e}")
 
         context = {
             "books": books, 
+            "total_books": total,
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "has_next": current_page < total_pages,
+            "has_prev": current_page > 1,
             "search": search_query, 
             "categories": categories,
             "recommended_books": recommended_books
@@ -58,23 +70,36 @@ class BookSearchView(BaseProxyView):
     service_url = CATALOG_SERVICE_URL
     
     def get(self, request):
+        page = request.GET.get('page', 1)
+        page_size = 12
+        
         q = request.GET.get('q', '')
         min_price = request.GET.get('min_price', '')
         max_price = request.GET.get('max_price', '')
         sort = request.GET.get('sort', '')
         category_id = request.GET.get('category_id', '')
 
-        endpoint = "search/"
+        endpoint = f"search/?page={page}&page_size={page_size}"
         r = self.proxy_request(request, endpoint, method="GET")
 
-        data = r.json() if r and r.status_code == 200 else {}
-        books = data.get('results', []) if isinstance(data, dict) else data
+        data = r.json() if r and r.status_code == 200 else {"results": [], "total": 0}
+        books = data.get('results', [])
+        total = data.get('total', 0)
+        
+        import math
+        total_pages = math.ceil(total / page_size)
+        current_page = int(page)
         
         cat_r = requests.get(f"{BOOK_SERVICE_URL}/categories/")
         categories = cat_r.json() if cat_r and cat_r.status_code == 200 else []
 
         context = {
             "books": books,
+            "total_books": total,
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "has_next": current_page < total_pages,
+            "has_prev": current_page > 1,
             "q": q,
             "min_price": min_price,
             "max_price": max_price,

@@ -190,6 +190,19 @@
                             </tbody>
                         </table>
                     </div>
+                    {% if total_pages > 1 %}
+                    <div id="books-pagination" class="px-8 py-5 border-t border-slate-700 bg-slate-800/50 flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-widest text-slate-400">Page {{ current_page }} of {{ total_pages }} (Total: {{ total_books }})</span>
+                        <div class="flex gap-2">
+                            {% if has_prev %}
+                            <a href="?page={{ current_page|add:"-1" }}" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-black transition-all">← Previous</a>
+                            {% endif %}
+                            {% if has_next %}
+                            <a href="?page={{ current_page|add:"1" }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl text-xs font-black transition-all">Next →</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </section>
             </div>
 
@@ -233,6 +246,13 @@
                                 <!-- Loaded via JS -->
                             </tbody>
                         </table>
+                    </div>
+                    <div id="orders-pagination-container" class="px-8 py-5 border-t border-slate-700 bg-slate-800/50 flex justify-between items-center hidden">
+                        <span id="orders-page-info" class="text-xs font-bold text-slate-500 uppercase tracking-widest text-slate-400">Page 1 of 1</span>
+                        <div class="flex gap-2">
+                            <button id="orders-prev-btn" onclick="changeOrderPage(-1)" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-black transition-all disabled:opacity-30 disabled:cursor-not-allowed">← Previous</button>
+                            <button id="orders-next-btn" onclick="changeOrderPage(1)" class="px-4 py-2 bg-blue-500 hover:bg-blue-400 text-white rounded-xl text-xs font-black transition-all disabled:opacity-30 disabled:cursor-not-allowed">Next →</button>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -518,6 +538,8 @@
         }
 
         // ORDERS FUNCTIONS
+        let currentOrderPage = 1;
+
         function getStatusColorClass(s) {
             const map = {
                 'completed': 'bg-green-900/40 text-green-400',
@@ -531,17 +553,27 @@
             return map[s] || 'bg-slate-700/50 text-slate-300';
         }
 
-        async function fetchOrders() {
+        async function fetchOrders(page = 1) {
+            currentOrderPage = page;
             try {
                 const status = document.getElementById('orderStatusFilter').value;
                 const days = document.getElementById('orderTimeFilter').value;
-                let url = `/api/staff/orders/?status=${status}&days=${days}`;
+                let url = `/api/staff/orders/?status=${status}&days=${days}&page=${page}&page_size=10`;
                 
                 const res = await fetch(url);
-                const orders = await res.json();
+                const data = await res.json();
+                
+                // Handle the new paginated format
+                const orders = data.results || (Array.isArray(data) ? data : []);
+                const total = data.total || orders.length;
+
                 const tbody = document.getElementById('orders-tbody');
                 tbody.innerHTML = '';
                 
+                if (orders.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="px-8 py-10 text-center text-slate-600 font-bold italic">No orders found.</td></tr>';
+                }
+
                 orders.forEach(o => {
                     const statusOptions = [
                         {val: 'pending_confirmation', label: 'Pending Confirmation'},
@@ -587,7 +619,33 @@
                     `;
                     tbody.insertAdjacentHTML('beforeend', row);
                 });
+
+                updateOrderPaginationUI(total, page, 10);
             } catch (e) { console.error("Error fetching orders:", e); }
+        }
+
+        function updateOrderPaginationUI(total, currentPage, pageSize) {
+            const container = document.getElementById('orders-pagination-container');
+            if (!container) return;
+
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.classList.remove('hidden');
+            document.getElementById('orders-page-info').textContent = `Page ${currentPage} of ${totalPages} (Total: ${total})`;
+            
+            const prevBtn = document.getElementById('orders-prev-btn');
+            const nextBtn = document.getElementById('orders-next-btn');
+            
+            prevBtn.disabled = (currentPage <= 1);
+            nextBtn.disabled = (currentPage >= totalPages);
+        }
+
+        function changeOrderPage(delta) {
+            fetchOrders(currentOrderPage + delta);
         }
 
         async function deleteOrder(id) {
@@ -903,4 +961,4 @@
     </style>
     {% include "components/order_modal.html" %}
 </body>
-</html>
+</html>

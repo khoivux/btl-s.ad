@@ -38,14 +38,30 @@ class StaffDashboardView(StaffRequiredMixin, BaseProxyView):
     service_url = BOOK_SERVICE_URL
 
     def get(self, request):
-        r = self.proxy_request(request, "books/", method="GET")
-        books = r.json() if r and r.status_code == 200 else []
+        page = request.GET.get('page', 1)
+        page_size = 12
+        
+        r = self.proxy_request(request, f"books/?page={page}&page_size={page_size}", method="GET")
+        data = r.json() if r and r.status_code == 200 else {"results": [], "total": 0}
+        
+        books = data.get('results', [])
+        total = data.get('total', 0)
+        
+        # Calculate pagination
+        import math
+        total_pages = math.ceil(total / page_size)
+        current_page = int(page)
         
         cat_r = requests.get(f"{BOOK_SERVICE_URL}/categories/")
         categories = cat_r.json() if cat_r and cat_r.status_code == 200 else []
         
         return render(request, "staff_dashboard.html", {
             "books": books,
+            "total_books": total,
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "has_next": current_page < total_pages,
+            "has_prev": current_page > 1,
             "categories": categories,
             "staff_name": request.session.get('staff_name')
         })

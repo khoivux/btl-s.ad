@@ -161,11 +161,26 @@ class OrderHistoryView(CustomerRequiredMixin, BaseProxyView):
 
     def get(self, request):
         customer_id = request.session['customer_id']
-        r = self.proxy_request(request, f"orders/?customer_id={customer_id}", method="GET")
-        orders = r.json() if r and r.status_code == 200 else []
+        page = request.GET.get('page', 1)
+        page_size = 10
+        
+        r = self.proxy_request(request, f"orders/?customer_id={customer_id}&page={page}&page_size={page_size}", method="GET")
+        data = r.json() if r and r.status_code == 200 else {"results": [], "total": 0}
+        
+        orders = data.get('results', [])
+        total = data.get('total', 0)
+        
+        import math
+        total_pages = math.ceil(total / page_size)
+        current_page = int(page)
         
         return render(request, "order_history.html", {
             "orders": orders,
+            "total_orders": total,
+            "current_page": current_page,
+            "total_pages": total_pages,
+            "has_next": current_page < total_pages,
+            "has_prev": current_page > 1,
             "customer_name": request.session.get('customer_name'),
         })
 

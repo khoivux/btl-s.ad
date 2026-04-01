@@ -79,6 +79,27 @@
             {% endfor %}
         </div>
 
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="mt-10 flex justify-center items-center gap-4">
+            {% if has_prev %}
+            <a href="?page={{ current_page|add:"-1" }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2">
+                ← Previous
+            </a>
+            {% endif %}
+            
+            <span class="text-sm font-black text-slate-400 bg-slate-100 px-4 py-2 rounded-lg tracking-widest uppercase">
+                Page {{ current_page }} / {{ total_pages }}
+            </span>
+            
+            {% if has_next %}
+            <a href="?page={{ current_page|add:"1" }}" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg flex items-center gap-2">
+                Next →
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
         <!-- Confirm Delete Modal (Generic for any order id) -->
         <div id="deleteModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl">

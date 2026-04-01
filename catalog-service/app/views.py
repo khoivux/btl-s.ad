@@ -97,8 +97,13 @@ class CatalogListView(APIView):
         cursor = books_collection.find(query)
         
         # Pagination
-        limit = int(request.query_params.get('limit', 20))
-        offset = int(request.query_params.get('offset', 0))
+        # Pagination
+        page = int(request.query_params.get('page', 1))
+        page_size = int(request.query_params.get('page_size', 10))
+        
+        limit = int(request.query_params.get('limit', page_size))
+        offset = int(request.query_params.get('offset', (page - 1) * limit))
+        
         cursor = cursor.skip(offset).limit(limit)
 
         results = []
