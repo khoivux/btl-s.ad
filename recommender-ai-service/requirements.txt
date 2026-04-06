@@ -4,3 +4,12 @@ requests==2.32.3
 pymongo==4.10.1
 gunicorn==23.0.0
 django-cors-headers==4.6.0
+langchain==0.3.7
+google-generativeai==0.8.3
+langchain-google-genai==2.0.4
+chromadb==0.5.18
+torch==2.1.2
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.5.2
+python-dotenv==1.0.1

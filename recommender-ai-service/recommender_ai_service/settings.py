@@ -79,3 +79,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyCyRp-rwMK2nKOLrmrtgKA6UdUaSyy7_w4')
