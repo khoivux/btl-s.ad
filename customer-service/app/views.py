@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Customer, Address, MembershipLevel, LoyaltyWallet, PointTransaction
-from .serializers import CustomerSerializer, AddressSerializer, LoyaltyWalletSerializer, MembershipLevelSerializer
+from .models import Customer, Address, MembershipLevel, LoyaltyWallet, PointTransaction, SearchHistory, InteractionLog, ChatMessage
+from .serializers import CustomerSerializer, AddressSerializer, LoyaltyWalletSerializer, MembershipLevelSerializer, SearchHistorySerializer, InteractionLogSerializer, ChatMessageSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -215,3 +215,42 @@ class MembershipLevelList(APIView):
     def get(self, request):
         levels = MembershipLevel.objects.all().order_by('id')
         return Response(MembershipLevelSerializer(levels, many=True).data)
+
+# --- AI & Behavior Tracking Views ---
+
+@method_decorator(csrf_exempt, name='dispatch')
+class SearchHistoryView(APIView):
+    def get(self, request, customer_id):
+        history = SearchHistory.objects.filter(customer_id=customer_id).order_by('-created_at')[:50]
+        return Response(SearchHistorySerializer(history, many=True).data)
+
+    def post(self, request, customer_id):
+        query = request.data.get('query')
+        if not query:
+            return Response({'error': 'Query is required'}, status=400)
+        history = SearchHistory.objects.create(customer_id=customer_id, query=query)
+        return Response(SearchHistorySerializer(history).data, status=201)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class InteractionLogView(APIView):
+    def post(self, request, customer_id):
+        book_id = request.data.get('book_id')
+        action_type = request.data.get('action_type')
+        if not book_id or not action_type:
+            return Response({'error': 'book_id and action_type are required'}, status=400)
+        log = InteractionLog.objects.create(customer_id=customer_id, book_id=book_id, action_type=action_type)
+        return Response(InteractionLogSerializer(log).data, status=201)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ChatMessageListView(APIView):
+    def get(self, request, customer_id):
+        messages = ChatMessage.objects.filter(customer_id=customer_id).order_by('timestamp')
+        return Response(ChatMessageSerializer(messages, many=True).data)
+
+    def post(self, request, customer_id):
+        role = request.data.get('role')
+        content = request.data.get('content')
+        if not role or not content:
+            return Response({'error': 'role and content are required'}, status=400)
+        msg = ChatMessage.objects.create(customer_id=customer_id, role=role, content=content)
+        return Response(ChatMessageSerializer(msg).data, status=201)

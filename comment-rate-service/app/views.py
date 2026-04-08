@@ -41,4 +41,14 @@ class ReviewListCreate(APIView):
             defaults={'rating': rating, 'comment': comment, 'customer_name': customer_name}
         )
         
+        
         return Response(ReviewSerializer(review).data, status=201 if created else 200)
+
+class ReviewReadAll(APIView):
+    """
+    GET /reviews/all/ → Get every single review for training.
+    """
+    def get(self, request):
+        reviews = Review.objects.all().order_by('-created_at')
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(serializer.data)

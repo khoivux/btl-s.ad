@@ -1,0 +1,272 @@
+<!-- AI Consultant Widget -->
+<style>
+    #ai-chat-widget {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        font-family: 'Inter', sans-serif;
+    }
+
+    #chat-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    #chat-circle:hover {
+        transform: scale(1.1);
+    }
+
+    #chat-box {
+        position: absolute;
+        bottom: 80px;
+        right: 0;
+        width: 480px;
+        height: 680px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #eef2f6;
+    }
+
+    #chat-box.active {
+        display: flex;
+    }
+
+    #chat-header {
+        background: #6366f1;
+        color: white;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .message {
+        max-width: 85%;
+        padding: 10px 15px;
+        border-radius: 15px;
+        font-size: 1rem;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        /* Preserve newlines */
+    }
+
+    .message.user {
+        background: #6366f1;
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 2px;
+    }
+
+    .message.assistant {
+        background: white;
+        color: #334155;
+        align-self: flex-start;
+        border-bottom-left-radius: 2px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    #chat-input-area {
+        padding: 15px;
+        border-top: 1px solid #eef2f6;
+        display: flex;
+        gap: 10px;
+    }
+
+    #chat-input-area input {
+        flex: 1;
+        border: 1px solid #e2e8f0;
+        padding: 8px 12px;
+        border-radius: 20px;
+        outline: none;
+    }
+
+    #chat-input-area button {
+        background: #6366f1;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .typing-skeleton {
+        display: none;
+        background: white;
+        padding: 10px 15px;
+        border-radius: 15px;
+        align-self: flex-start;
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+</style>
+
+<!-- Load FontAwesome if missing -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div id="ai-chat-widget">
+    <div id="chat-circle">
+        <!-- AI Robot Icon with subtle animation -->
+        <i class="fas fa-robot fa-2x" style="color: white; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));"></i>
+    </div>
+
+    <div id="chat-box">
+        <div id="chat-header">
+            <div>
+                <i class="fas fa-robot mr-2"></i>
+                <strong>AI Consultant</strong>
+            </div>
+            <i class="fas fa-times cursor-pointer" id="close-chat"></i>
+        </div>
+
+        <div id="chat-messages">
+            <div class="message assistant">Chào bạn! Tôi là chuyên gia tư vấn sách. Tôi có thể giúp gì cho bạn?</div>
+            <div id="typing-indicator" class="typing-skeleton">Chờ tôi một chút...</div>
+        </div>
+
+        <form id="chat-form">
+            <div id="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Hỏi tôi đi..." autocomplete="off">
+                <button type="submit">Gửi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const chatCircle = document.getElementById('chat-circle');
+    const chatBox = document.getElementById('chat-box');
+    const closeChat = document.getElementById('close-chat');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Toggle Chat Box
+    chatCircle.addEventListener('click', () => {
+        chatBox.classList.add('active');
+        loadHistory();
+    });
+
+    closeChat.addEventListener('click', () => {
+        chatBox.classList.remove('active');
+    });
+
+    // Load History
+    async function loadHistory() {
+        try {
+            const res = await fetch('/api/chat/history/');
+            if (res.ok) {
+                const history = await res.json();
+                if (history.length > 0) {
+                    // Only remove .message divs, keep typing-indicator
+                    const messages = chatMessages.querySelectorAll('.message');
+                    messages.forEach(m => m.remove());
+
+                    history.forEach(msg => {
+                        appendMessage(msg.role, msg.content);
+                    });
+                }
+            }
+        } catch (err) {
+            console.error("Failed to load history", err);
+        }
+    }
+
+    function appendMessage(role, content) {
+        const div = document.createElement('div');
+        div.className = `message ${role}`;
+        updateMessageContent(div, content);
+
+        if (typingIndicator && chatMessages.contains(typingIndicator)) {
+            chatMessages.insertBefore(div, typingIndicator);
+        } else {
+            chatMessages.appendChild(div);
+        }
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return div;
+    }
+
+    function updateMessageContent(div, content) {
+        // Escape HTML to prevent XSS
+        let htmlContent = content.replace(/[&<>'"]/g,
+            tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag));
+
+        // Basic Markdown Parser (Bold)
+        htmlContent = htmlContent.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        div.innerHTML = htmlContent;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (!msg) return;
+
+        appendMessage('user', msg);
+        chatInput.value = '';
+
+        typingIndicator.style.display = 'block';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        try {
+            const response = await fetch('/api/chat/consultant/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: msg })
+            });
+
+            if (!response.ok) throw new Error("AI Service Unavailable");
+
+            // Prepare empty assistant message for streaming
+            typingIndicator.style.display = 'none';
+            const assistantDiv = appendMessage('assistant', '');
+            let fullText = "";
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                fullText += chunk;
+                updateMessageContent(assistantDiv, fullText);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        } catch (err) {
+            typingIndicator.style.display = 'none';
+            appendMessage('assistant', "Rất tiếc, tôi đang gặp lỗi kết nối dòng dữ liệu.");
+            console.error("Stream failed", err);
+        }
+    });
+</script>

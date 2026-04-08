@@ -258,6 +258,7 @@ services:
       - recommender-db
     environment:
       - MONGO_URL=mongodb://recommender-db:27017/
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./recommender-ai-service:/app
 
@@ -266,6 +267,8 @@ services:
     build: ./api_gateway
     ports:
       - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./api_gateway:/app
 

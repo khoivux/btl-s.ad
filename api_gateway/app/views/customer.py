@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse
 import requests
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -166,4 +166,51 @@ class PointTransactionApiView(CustomerRequiredMixin, BaseProxyView):
         if not r:
             return JsonResponse({'error': 'Service Unavailable'}, status=503)
         return JsonResponse(r.json(), safe=False)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ChatHistoryApiView(CustomerRequiredMixin, BaseProxyView):
+    service_url = CUSTOMER_SERVICE_URL
+
+    def get(self, request):
+        customer_id = request.session['customer_id']
+        r = self.proxy_request(request, f"customers/{customer_id}/chat-messages/", method="GET")
+        if not r:
+            return JsonResponse({'error': 'Service Unavailable'}, status=503)
+        return JsonResponse(r.json(), safe=False)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ChatConsultantApiView(CustomerRequiredMixin, BaseProxyView):
+    service_url = "http://recommender-ai-service:8000"
+
+    def post(self, request):
+        customer_id = request.session['customer_id']
+        try:
+            data = json.loads(request.body)
+            # Use streaming requests to proxy the chunks
+            r = requests.post(
+                f"{self.service_url}/chat/consultant/{customer_id}/",
+                json=data,
+                stream=True,
+                timeout=30
+            )
+            
+            if r.status_code != 200:
+                return JsonResponse({'error': 'AI Service Error'}, status=r.status_code)
+
+            def stream_chunks():
+                print("[GATEWAY] Starting stream from AI Service...")
+                for chunk in r.iter_content(chunk_size=None):
+                    if chunk:
+                        text = chunk.decode('utf-8')
+                        print(f"[GATEWAY] Received chunk: {len(text)} chars")
+                        yield text
+
+            response = StreamingHttpResponse(stream_chunks(), content_type='text/plain')
+            response['X-Content-Type-Options'] = 'nosniff'
+            response['X-Accel-Buffering'] = 'no'
+            return response
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 

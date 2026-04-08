@@ -3,7 +3,8 @@ from django.urls import path
 from app.views import (
     CustomerListCreate, CustomerDetail, LoginView, 
     AddressListCreate, AddressDetail, WalletDetail, AddPointsView,
-    MembershipLevelList, PointTransactionListView
+    MembershipLevelList, PointTransactionListView,
+    SearchHistoryView, InteractionLogView, ChatMessageListView
 )
 
 urlpatterns = [
@@ -19,4 +20,9 @@ urlpatterns = [
     path('customers/<int:customer_id>/wallet/add-points/', AddPointsView.as_view(), name='add-points'),
     path('customers/<int:customer_id>/wallet/transactions/', PointTransactionListView.as_view(), name='point-transactions'),
     path('membership-levels/', MembershipLevelList.as_view(), name='membership-level-list'),
+
+    # AI & Behavior Tracking
+    path('customers/<int:customer_id>/search-history/', SearchHistoryView.as_view(), name='search-history'),
+    path('customers/<int:customer_id>/interaction-logs/', InteractionLogView.as_view(), name='interaction-logs'),
+    path('customers/<int:customer_id>/chat-messages/', ChatMessageListView.as_view(), name='chat-messages'),
 ]

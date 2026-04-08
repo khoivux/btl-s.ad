@@ -1,6 +1,6 @@
 from django.urls import path
 from app.views.books import BookListView, BookSearchView, BookDetailView, BookReviewSubmitView
-from app.views.customer import LoginView, RegisterView, LogoutView, ProfileView, ProfileApiView, AddressApiListView, AddressApiDetailView, PointTransactionApiView
+from app.views.customer import LoginView, RegisterView, LogoutView, ProfileView, ProfileApiView, AddressApiListView, AddressApiDetailView, PointTransactionApiView, ChatHistoryApiView, ChatConsultantApiView
 from app.views.orders import CheckoutPageView, CheckoutApiView, OrderHistoryView, OrderSuccessView, OrderDetailView, OrderTrackingView, OrderActionApiView, OrderDetailApiView
 from app.views.cart import CartView, AddCartItemView, ModifyCartItemView
 from app.views.vouchers import WalletApiView, VouchersListApiView, MembershipLevelsApiView, RedeemVoucherApiView, CustomerVouchersApiView, VouchersShopView, VoucherDetailApiView
@@ -22,6 +22,10 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
     path('api/profile/', ProfileApiView.as_view(), name='api_update_profile'),
     path('api/loyalty/transactions/', PointTransactionApiView.as_view(), name='api_point_transactions'),
+
+    # AI Assistant
+    path('api/chat/history/', ChatHistoryApiView.as_view(), name='api_chat_history'),
+    path('api/chat/consultant/', ChatConsultantApiView.as_view(), name='api_chat_consultant'),
 
     # Address API
     path('api/addresses/<int:customer_id>/', AddressApiListView.as_view(), name='address_list'),

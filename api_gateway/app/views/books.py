@@ -61,6 +61,7 @@ class BookListView(BaseProxyView):
             "recommended_books": recommended_books
         }
         if 'customer_id' in request.session:
+            context['customer_id'] = request.session.get('customer_id')
             context['customer_name'] = request.session.get('customer_name')
         return render(request, "books.html", context)
 
@@ -108,7 +109,15 @@ class BookSearchView(BaseProxyView):
             "categories": categories
         }
         if 'customer_id' in request.session:
+            customer_id = request.session.get('customer_id')
+            context['customer_id'] = customer_id
             context['customer_name'] = request.session.get('customer_name')
+            # Log Search History
+            if q:
+                try:
+                    requests.post(f"http://customer-service:8000/customers/{customer_id}/search-history/", json={'query': q})
+                except Exception:
+                    pass
             
         return render(request, "search.html", context)
 
@@ -146,6 +155,15 @@ class BookDetailView(BaseProxyView):
                     has_purchased = cr.json().get('has_purchased', False)
             except Exception as e:
                 print(f"[{self.__class__.__name__}] CheckPurchase Exception: {e}")
+
+            # Log Book View Interaction
+            try:
+                requests.post(f"http://customer-service:8000/customers/{customer_id}/interaction-logs/", json={
+                    'book_id': book_id,
+                    'action_type': 'VIEW_BOOK'
+                })
+            except Exception:
+                pass
 
         context = {
             "book": book,

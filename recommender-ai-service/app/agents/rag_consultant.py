@@ -32,7 +32,7 @@ class ConsultantAgent:
 
         persona = f"Khách hàng số #{user_id} (Hạng thẻ {level_id}, tích lũy {points} điểm). Người quan tâm đến Bookstore."
 
-        # 2. Retrieval: Optimized to rank based on both Vector Search and Behavioral Score
+        # R. Retrieval: Optimized to rank based on both Vector Search and Behavioral Score
         kb_results = vector_db.query(user_message, n_results=150)
         docs = kb_results.get('documents', [[]])[0]
         

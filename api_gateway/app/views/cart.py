@@ -61,6 +61,18 @@ class AddCartItemView(BaseProxyView):
             r = self.proxy_request(request, "carts/items/", method="POST", payload=payload)
             if not r:
                 return JsonResponse({'error': 'Service Unavailable'}, status=503)
+            
+            # Log Interaction
+            if r.status_code in (200, 201):
+                try:
+                    customer_id = request.session.get('customer_id')
+                    requests.post(f"http://customer-service:8000/customers/{customer_id}/interaction-logs/", json={
+                        'book_id': payload['book_id'],
+                        'action_type': 'ADD_TO_CART'
+                    })
+                except Exception:
+                    pass
+            
             return JsonResponse(r.json(), status=r.status_code)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)

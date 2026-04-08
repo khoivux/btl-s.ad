@@ -10,15 +10,15 @@ class BaseProxyView(View):
         headers = {'Content-Type': 'application/json'}
         try:
             if method == "GET":
-                response = requests.get(url, params=request.GET, headers=headers, timeout=5)
+                response = requests.get(url, params=request.GET, headers=headers, timeout=30)
             elif method == "POST":
-                response = requests.post(url, json=payload, headers=headers, timeout=5)
+                response = requests.post(url, json=payload, headers=headers, timeout=30)
             elif method == "PUT":
-                response = requests.put(url, json=payload, headers=headers, timeout=5)
+                response = requests.put(url, json=payload, headers=headers, timeout=30)
             elif method == "DELETE":
-                response = requests.delete(url, headers=headers, timeout=5)
+                response = requests.delete(url, headers=headers, timeout=30)
             elif method == "PATCH":
-                response = requests.patch(url, json=payload, headers=headers, timeout=5)
+                response = requests.patch(url, json=payload, headers=headers, timeout=30)
             else:
                 return None
             return response

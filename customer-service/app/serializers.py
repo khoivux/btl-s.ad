@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Customer, Address, MembershipLevel, LoyaltyWallet, PointTransaction
+from .models import Customer, Address, MembershipLevel, LoyaltyWallet, PointTransaction, SearchHistory, InteractionLog, ChatMessage
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,6 +28,21 @@ class LoyaltyWalletSerializer(serializers.ModelSerializer):
     def get_transactions(self, obj):
         txns = obj.transactions.all().order_by('-created_at')[:20]  # Get last 20
         return PointTransactionSerializer(txns, many=True).data
+
+class SearchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchHistory
+        fields = ['id', 'customer', 'query', 'created_at']
+
+class InteractionLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InteractionLog
+        fields = ['id', 'customer', 'book_id', 'action_type', 'created_at']
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'customer', 'role', 'content', 'timestamp']
 
 class CustomerSerializer(serializers.ModelSerializer):
     addresses = AddressSerializer(many=True, read_only=True)

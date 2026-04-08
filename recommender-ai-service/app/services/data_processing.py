@@ -15,13 +15,7 @@ class BehaviorDataProcessor:
     Handles data engineering: Fetching raw data from and converting it to 
     (user_id, book_id, score) interactions for the ML model.
     """
-    
     def fetch_raw_interactions(self):
-        """
-        The Advanced Pre-processing Engine.
-        Gathers raw data, applies priority rules, and calculates Per-User 5-dim Context.
-        """
-        # Data Buckets
         review_map = {} # (u, b) -> score
         order_map = {}  # (u, b) -> 5.0
         cart_map = {}   # (u, b) -> 3.0
