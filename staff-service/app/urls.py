@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import StaffBookManager, StaffBookDetailManager, StaffLogin
+from .views import StaffProductManager, StaffProductDetailManager, StaffLogin
 
 urlpatterns = [
     path('staff/login/', StaffLogin.as_view(), name='staff-login'),
-    path('staff/books/', StaffBookManager.as_view(), name='staff-books'),
-    path('staff/books/<int:pk>/', StaffBookDetailManager.as_view(), name='staff-books-detail'),
+    path('staff/products/', StaffProductManager.as_view(), name='staff-products'),
+    path('staff/products/<int:pk>/', StaffProductDetailManager.as_view(), name='staff-products-detail'),
 ]

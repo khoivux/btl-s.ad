@@ -6,7 +6,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'book_id', 'book_title', 'quantity', 'unit_price', 'subtotal']
+        fields = ['id', 'product_id', 'product_name', 'item_image_url', 'quantity', 'unit_price', 'subtotal']
 
 class OrderStatusLogSerializer(serializers.ModelSerializer):
     class Meta:

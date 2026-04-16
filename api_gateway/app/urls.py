@@ -1,19 +1,24 @@
 from django.urls import path
-from app.views.books import BookListView, BookSearchView, BookDetailView, BookReviewSubmitView
-from app.views.customer import LoginView, RegisterView, LogoutView, ProfileView, ProfileApiView, AddressApiListView, AddressApiDetailView, PointTransactionApiView, ChatHistoryApiView, ChatConsultantApiView
+from app.views.products import ProductListView, ProductSearchView, ProductDetailView, ProductReviewSubmitView
+from app.views.customer import LoginView, RegisterView, LogoutView, ProfileView, ProfileApiView, AddressApiListView, AddressApiDetailView, PointTransactionApiView, ChatHistoryApiView, ChatConsultantApiView, RecommenderProxyView
 from app.views.orders import CheckoutPageView, CheckoutApiView, OrderHistoryView, OrderSuccessView, OrderDetailView, OrderTrackingView, OrderActionApiView, OrderDetailApiView
 from app.views.cart import CartView, AddCartItemView, ModifyCartItemView
 from app.views.vouchers import WalletApiView, VouchersListApiView, MembershipLevelsApiView, RedeemVoucherApiView, CustomerVouchersApiView, VouchersShopView, VoucherDetailApiView
-from app.views.staff import StaffLoginView, StaffDashboardView, StaffLogoutView, StaffBookAddView, StaffBookModifyView, StaffVoucherListCreateView, StaffVoucherDetailView, StaffCategoryAddView, StaffCategoryModifyView, StaffOrderManageView
+from app.views.staff import StaffLoginView, StaffDashboardView, StaffLogoutView, StaffProductAddView, StaffProductModifyView, StaffVoucherListCreateView, StaffVoucherDetailView, StaffCategoryAddView, StaffCategoryModifyView, StaffOrderManageView
 from app.views.shipper import ShipperDashboardView, ShipperShipmentsApiView, ShipperStatusUpdateApiView
 
 urlpatterns = [
-    # Book routes
-    path('', BookListView.as_view(), name='home'),
-    path('books/', BookListView.as_view(), name='book_list'),
-    path('books/<int:book_id>/', BookDetailView.as_view(), name='book_detail'),
-    path('api/books/<int:book_id>/reviews/', BookReviewSubmitView.as_view(), name='book_review_submit'),
-    path('search/', BookSearchView.as_view(), name='search'),
+    # Product routes (new)
+    path('', ProductListView.as_view(), name='home'),
+    path('products/', ProductListView.as_view(), name='product_list'),
+    path('products/<int:product_id>/', ProductDetailView.as_view(), name='product_detail'),
+    path('api/products/<int:product_id>/reviews/', ProductReviewSubmitView.as_view(), name='product_review_submit'),
+    path('search/', ProductSearchView.as_view(), name='search'),
+
+    # Legacy book routes (backward compat aliases)
+    path('books/', ProductListView.as_view(), name='book_list'),
+    path('books/<int:product_id>/', ProductDetailView.as_view(), name='book_detail'),
+    path('api/books/<int:product_id>/reviews/', ProductReviewSubmitView.as_view(), name='book_review_submit'),
 
     # Auth & Customer
     path('login/', LoginView.as_view(), name='login'),
@@ -26,6 +31,7 @@ urlpatterns = [
     # AI Assistant
     path('api/chat/history/', ChatHistoryApiView.as_view(), name='api_chat_history'),
     path('api/chat/consultant/', ChatConsultantApiView.as_view(), name='api_chat_consultant'),
+    path('api/recommender/<path:path>', RecommenderProxyView.as_view(), name='api_recommender_proxy'),
 
     # Address API
     path('api/addresses/<int:customer_id>/', AddressApiListView.as_view(), name='address_list'),
@@ -60,9 +66,9 @@ urlpatterns = [
     path('staff/login/', StaffLoginView.as_view(), name='staff_login'),
     path('staff/dashboard/', StaffDashboardView.as_view(), name='staff_dashboard'),
     path('staff/logout/', StaffLogoutView.as_view(), name='staff_logout'),
-    path('staff/books/add/', StaffBookAddView.as_view(), name='staff_add_book'),
-    path('staff/books/<int:pk>/update/', StaffBookModifyView.as_view(), name='staff_update_book'),
-    path('staff/books/<int:pk>/delete/', StaffBookModifyView.as_view(), name='staff_delete_book'),
+    path('staff/products/add/', StaffProductAddView.as_view(), name='staff_add_product'),
+    path('staff/products/<int:pk>/update/', StaffProductModifyView.as_view(), name='staff_update_product'),
+    path('staff/products/<int:pk>/delete/', StaffProductModifyView.as_view(), name='staff_delete_product'),
     path('staff/categories/add/', StaffCategoryAddView.as_view(), name='staff_add_category'),
     path('staff/categories/<int:pk>/update/', StaffCategoryModifyView.as_view(), name='staff_update_category'),
     path('staff/categories/<int:pk>/delete/', StaffCategoryModifyView.as_view(), name='staff_delete_category'),
@@ -71,7 +77,7 @@ urlpatterns = [
     path('api/staff/vouchers/', StaffVoucherListCreateView.as_view(), name='staff_voucher_list_create'),
     path('api/staff/vouchers/<int:pk>/', StaffVoucherDetailView.as_view(), name='staff_voucher_detail'),
 
-    # Staff Order management (RESTful)
+    # Staff Order management
     path('api/staff/orders/', StaffOrderManageView.as_view(), name='staff_order_list'),
     path('api/staff/orders/<int:pk>/', StaffOrderManageView.as_view(), name='staff_order_manage'),
 

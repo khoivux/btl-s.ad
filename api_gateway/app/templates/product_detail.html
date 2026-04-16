@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroStore — {{ product.name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: {
+                colors: { primary: '#4F46E5', secondary: '#F59E0B', accent: '#E11D48' },
+                fontFamily: { sans: ['Nunito Sans', 'sans-serif'], heading: ['Rubik', 'sans-serif'] }
+            }}
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+    {% include 'navbar.html' %}
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Breadcrumb -->
+    <nav class="mb-8 flex text-sm text-slate-500 font-medium">
+        <a href="/products/" class="hover:text-indigo-600 transition-colors">Products</a>
+        {% if product.category_name %}
+        <span class="mx-2">/</span>
+        <a href="/products/?category_id={{ product.category_id }}" class="hover:text-indigo-600 transition-colors">{{ product.category_name }}</a>
+        {% endif %}
+        <span class="mx-2">/</span>
+        <span class="text-slate-800">{{ product.name }}</span>
+    </nav>
+
+    <!-- Product Details -->
+    <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-12">
+            <!-- Image -->
+            <div class="col-span-1 md:col-span-5 lg:col-span-4 bg-slate-50 p-8 flex items-center justify-center min-h-[400px]">
+                <div class="w-full max-w-xs aspect-square bg-white rounded-xl shadow-lg overflow-hidden shadow-indigo-200/50">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                </div>
+            </div>
+
+            <!-- Info -->
+            <div class="col-span-1 md:col-span-7 lg:col-span-8 p-8 md:p-12 flex flex-col">
+                <div class="flex items-center gap-3 mb-4 text-sm font-bold flex-wrap">
+                    {% if product.category_name %}
+                    <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full">{{ product.category_name }}</span>
+                    {% endif %}
+                    <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full flex items-center gap-1">
+                        ★ {{ reviews_data.avg_rating }}
+                    </span>
+                    <span class="text-slate-500">({{ reviews_data.total_reviews }} reviews)</span>
+                </div>
+
+                <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-3 font-heading tracking-tight leading-tight">{{ product.name }}</h1>
+
+                {% if product.description %}
+                <p class="text-slate-600 leading-relaxed mb-6 line-clamp-4">{{ product.description }}</p>
+                {% endif %}
+
+                <div class="text-4xl font-black text-indigo-600 mb-8">${{ product.price }}</div>
+
+                <div class="flex flex-col sm:flex-row gap-4 mt-auto">
+                    <button onclick="addToCart({{ product.id }})"
+                            class="flex-1 bg-white outline outline-2 outline-indigo-600 text-indigo-600 font-bold py-4 px-8 rounded-xl hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
+                        🛒 Add to Cart
+                    </button>
+                    <button class="flex-1 bg-indigo-600 text-white font-bold py-4 px-8 rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-1">
+                        ⚡ Buy Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <!-- Description -->
+        <div class="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 shadow-sm">
+            <h2 class="text-xl font-black text-slate-900 font-heading mb-6 flex items-center gap-2">
+                <span class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center text-sm">📝</span>
+                Description
+            </h2>
+            <div class="text-slate-600 leading-loose">
+                {{ product.description|default:"No description available."|linebreaks }}
+            </div>
+        </div>
+
+        <!-- Dynamic Attributes (JSONB) -->
+        {% if product.attributes %}
+        <div class="bg-white rounded-3xl p-8 md:p-10 border border-slate-200 shadow-sm">
+            <h2 class="text-xl font-black text-slate-900 font-heading mb-6 flex items-center gap-2">
+                <span class="w-8 h-8 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center text-sm">📋</span>
+                Specifications
+            </h2>
+            <div class="space-y-3">
+                {% for key, value in product.attributes.items %}
+                <div class="flex justify-between py-2 border-b border-slate-50 last:border-0">
+                    <span class="text-slate-500 font-medium capitalize">{{ key|title|cut:"_" }}</span>
+                    <span class="text-slate-900 font-bold text-right max-w-xs">{{ value }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Reviews Section -->
+    <section>
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-slate-900 font-heading">Customer Reviews</h2>
+                <p class="text-slate-500 mt-1">What our customers are saying</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Review Form -->
+            <div class="lg:col-span-1">
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 sticky top-6">
+                    {% if not customer_id %}
+                        <div class="text-center py-6 text-slate-500">
+                            <p class="mb-4">Please log in to leave a review</p>
+                            <a href="/login/?next=/products/{{ product.id }}/" class="text-indigo-600 font-bold hover:underline">Sign In</a>
+                        </div>
+                    {% elif not has_purchased %}
+                        <div class="text-center py-6 text-slate-500">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">🔒</div>
+                            <p class="font-bold text-slate-800 mb-1">Verified Purchase Only</p>
+                            <p class="text-sm">Purchase this product to leave a review.</p>
+                        </div>
+                    {% else %}
+                        <h3 class="font-bold text-slate-800 mb-4">Write a Review</h3>
+                        <form id="reviewForm" onsubmit="submitReview(event, {{ product.id }})">
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Rating</label>
+                                <div class="flex gap-2">
+                                    {% for i in "12345" %}
+                                    <label class="cursor-pointer">
+                                        <input type="radio" name="rating" value="{{ forloop.counter }}" class="peer sr-only" required>
+                                        <div class="w-10 h-10 rounded-full bg-white border-2 border-slate-200 peer-checked:border-amber-400 peer-checked:bg-amber-50 flex items-center justify-center text-slate-300 peer-checked:text-amber-500 transition-colors">★</div>
+                                    </label>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Comment</label>
+                                <textarea name="comment" rows="4" class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" placeholder="Share your thoughts..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl hover:bg-slate-800 transition-colors">Submit Review</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="lg:col-span-2 space-y-4">
+                {% if reviews_data.reviews %}
+                    {% for review in reviews_data.reviews %}
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center rounded-full">
+                                    {{ review.customer_name|slice:":1"|upper }}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900">{{ review.customer_name }}</p>
+                                    <div class="flex text-amber-400 text-sm">
+                                        {% for i in "12345" %}{% if forloop.counter <= review.rating %}★{% else %}<span class="text-slate-200">★</span>{% endif %}{% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-sm text-slate-400">{{ review.created_at|slice:":10" }}</span>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed">{{ review.comment }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-12 bg-white rounded-2xl border border-slate-200">
+                        <p class="text-slate-500">No reviews yet. Be the first to share your thoughts!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="bg-white border-t border-slate-200 mt-12 py-8">
+    <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">&copy; 2026 MicroStore. Built with microservices.</div>
+</footer>
+
+<script>
+    async function addToCart(productId) {
+        try {
+            const response = await fetch(`/api/carts/items/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId, quantity: 1 })
+            });
+            if (response.status === 401) { window.location.href = '/login/?next=/products/'; return; }
+            if (response.ok) {
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-xl translate-y-10 opacity-0 transition-all duration-300 z-50 flex items-center gap-3';
+                toast.innerHTML = '<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Added to cart!';
+                document.body.appendChild(toast);
+                requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+                setTimeout(() => { toast.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
+            } else {
+                alert('Could not add to cart.');
+            }
+        } catch (err) { console.error(err); }
+    }
+
+    async function submitReview(e, productId) {
+        e.preventDefault();
+        const form = e.target;
+        const rating = form.rating.value;
+        const comment = form.comment.value;
+        if (!rating) { alert("Please select a rating."); return; }
+        try {
+            const res = await fetch(`/api/products/${productId}/reviews/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: parseInt(rating), comment })
+            });
+            if (res.ok) { window.location.reload(); }
+            else { const d = await res.json(); alert(d.error || "Failed to submit review"); }
+        } catch (err) { alert("Error submitting review"); }
+    }
+</script>
+</body>
+</html>

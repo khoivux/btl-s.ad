@@ -214,3 +214,12 @@ class ChatConsultantApiView(CustomerRequiredMixin, BaseProxyView):
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
 
+@method_decorator(csrf_exempt, name='dispatch')
+class RecommenderProxyView(BaseProxyView):
+    service_url = "http://recommender-ai-service:8000"
+
+    def post(self, request, path):
+        return self.proxy_request(request, f"api/{path}", method="POST")
+
+    def get(self, request, path):
+        return self.proxy_request(request, f"api/{path}", method="GET")

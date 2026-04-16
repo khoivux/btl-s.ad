@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from ..ai_core.behavior_trainer import behavior_trainer
 
-BOOK_SERVICE_URL = "http://book-service:8000"
+PRODUCT_SERVICE_URL = "http://product-service:8000"
 ORDER_SERVICE_URL = "http://order-service:8000"
 
 def get_recommendations(customer_id=None):
@@ -19,39 +19,39 @@ def get_recommendations(customer_id=None):
         try:
             ai_recs = behavior_trainer.get_recommendations(customer_id, top_k=10)
             if ai_recs:
-                # Format to match legacy expectations if needed by templates
+                # Format for frontend
                 for r in ai_recs:
-                    r['id'] = r['book_id'] # alias
+                    r['id'] = r['product_id']
                     r['final_score'] = r['score']
                 return ai_recs
         except Exception as e:
             print(f"[RECOM] ⚠️ AI Neural Engine Error: {e}. Falling back to legacy...")
 
     # --- PHASE 2: LEGACY BAYESIAN LOGIC (For Guests or Fallback) ---
-    books = []
+    products = []
     try:
-        r = requests.get(f"{BOOK_SERVICE_URL}/books/?limit=1000")
+        r = requests.get(f"{PRODUCT_SERVICE_URL}/products/?page_size=1000")
         if r.status_code == 200:
             data = r.json()
-            books = data.get('results', []) if isinstance(data, dict) else data
+            products = data.get('results', []) if isinstance(data, dict) else data
     except Exception as e:
-        print(f"[RECOM] Error fetching books: {e}")
+        print(f"[RECOM] Error fetching products: {e}")
+        
+    if not products: 
         return []
 
-    if not books: return []
-
     # Calculate Bayesian Average for fallback
-    all_ratings = [b.get('average_rating', 0) for b in books if b.get('reviews_count', 0) > 0]
+    all_ratings = [p.get('average_rating', 0) for p in products if p.get('reviews_count', 0) > 0]
     C = sum(all_ratings) / len(all_ratings) if all_ratings else 0
     m = 1
     
-    scored_books = []
-    for book in books:
-        v = book.get('reviews_count', 0)
-        R = book.get('average_rating', 0)
-        book['bayesian_score'] = (v / (v + m)) * R + (m / (v + m)) * C if v + m > 0 else 0
-        book['final_score'] = book['bayesian_score']
-        scored_books.append(book)
+    scored_products = []
+    for product in products:
+        v = product.get('reviews_count', 0)
+        R = product.get('average_rating', 0)
+        product['bayesian_score'] = (v / (v + m)) * R + (m / (v + m)) * C if v + m > 0 else 0
+        product['final_score'] = product['bayesian_score']
+        scored_products.append(product)
 
-    scored_books.sort(key=lambda x: x['final_score'], reverse=True)
-    return scored_books[:10]
+    scored_products.sort(key=lambda x: x['final_score'], reverse=True)
+    return scored_products[:10]

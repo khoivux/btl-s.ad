@@ -25,7 +25,7 @@ class ItemTower(tf.keras.Model):
         ])
 
     def call(self, inputs):
-        # inputs: book numerical features (price, category_id_onehot, reviews_count, avg_rating)
+        # inputs: product numerical features (price, category_id_onehot, reviews_count, avg_rating)
         return self.dense(inputs)
 
 class TwoTowerBehaviorModel(tfrs.Model):

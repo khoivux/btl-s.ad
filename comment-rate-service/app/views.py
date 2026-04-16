@@ -6,14 +6,14 @@ from django.db.models import Avg, Count
 
 class ReviewListCreate(APIView):
     """
-    GET /reviews/<book_id>/ → Returns all reviews for a book, plus avg rating & count.
+    GET /reviews/<product_id>/ → Returns all reviews for a product, plus avg rating & count.
     POST /reviews/ → Create or Update a review. (Upsert).
     """
-    def get(self, request, book_id):
-        reviews = Review.objects.filter(book_id=book_id).order_by('-created_at')
+    def get(self, request, product_id):
+        reviews = Review.objects.filter(product_id=product_id).order_by('-created_at')
         serializer = ReviewSerializer(reviews, many=True)
         
-        stats = Review.objects.filter(book_id=book_id).aggregate(
+        stats = Review.objects.filter(product_id=product_id).aggregate(
             avg_rating=Avg('rating'),
             total_reviews=Count('id')
         )
@@ -26,18 +26,18 @@ class ReviewListCreate(APIView):
 
     def post(self, request):
         customer_id = request.data.get('customer_id')
-        book_id = request.data.get('book_id')
+        product_id = request.data.get('product_id') or request.data.get('book_id') # handle both for transition
         rating = request.data.get('rating')
         comment = request.data.get('comment', '')
         customer_name = request.data.get('customer_name', 'User')
 
-        if not customer_id or not book_id or not rating:
-            return Response({'error': 'customer_id, book_id and rating are required'}, status=400)
+        if not customer_id or not product_id or not rating:
+            return Response({'error': 'customer_id, product_id and rating are required'}, status=400)
 
         # Upsert
         review, created = Review.objects.update_or_create(
             customer_id=customer_id,
-            book_id=book_id,
+            product_id=product_id,
             defaults={'rating': rating, 'comment': comment, 'customer_name': customer_name}
         )
         

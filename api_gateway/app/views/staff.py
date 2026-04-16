@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from .base import BaseProxyView, StaffRequiredMixin
 
 STAFF_SERVICE_URL = "http://staff-service:8000"
-BOOK_SERVICE_URL = "http://book-service:8000"
+PRODUCT_SERVICE_URL = "http://product-service:8000"
 ORDER_SERVICE_URL = "http://order-service:8000"
 
 class StaffLoginView(BaseProxyView):
@@ -35,29 +35,28 @@ class StaffLoginView(BaseProxyView):
 
 
 class StaffDashboardView(StaffRequiredMixin, BaseProxyView):
-    service_url = BOOK_SERVICE_URL
+    service_url = PRODUCT_SERVICE_URL
 
     def get(self, request):
         page = request.GET.get('page', 1)
         page_size = 12
-        
-        r = self.proxy_request(request, f"books/?page={page}&page_size={page_size}", method="GET")
+
+        r = self.proxy_request(request, f"products/?page={page}&page_size={page_size}", method="GET")
         data = r.json() if r and r.status_code == 200 else {"results": [], "total": 0}
-        
-        books = data.get('results', [])
+
+        products = data.get('results', [])
         total = data.get('total', 0)
-        
-        # Calculate pagination
+
         import math
-        total_pages = math.ceil(total / page_size)
+        total_pages = math.ceil(total / page_size) if total > 0 else 1
         current_page = int(page)
-        
-        cat_r = requests.get(f"{BOOK_SERVICE_URL}/categories/")
+
+        cat_r = requests.get(f"{PRODUCT_SERVICE_URL}/products/categories/")
         categories = cat_r.json() if cat_r and cat_r.status_code == 200 else []
-        
+
         return render(request, "staff_dashboard.html", {
-            "books": books,
-            "total_books": total,
+            "products": products,
+            "total_products": total,
             "current_page": current_page,
             "total_pages": total_pages,
             "has_next": current_page < total_pages,
@@ -76,40 +75,48 @@ class StaffLogoutView(BaseProxyView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class StaffBookAddView(StaffRequiredMixin, BaseProxyView):
-    service_url = STAFF_SERVICE_URL
+class StaffProductAddView(StaffRequiredMixin, BaseProxyView):
+    service_url = PRODUCT_SERVICE_URL
 
     def post(self, request):
         payload = {
-            "title": request.POST.get('title'),
-            "author": request.POST.get('author'),
+            "name": request.POST.get('name'),
+            "description": request.POST.get('description', ''),
             "price": request.POST.get('price'),
             "stock": request.POST.get('stock', 0),
+            "category_id": request.POST.get('category'),
+            "image_url": request.POST.get('image_url', ''),
+            "attributes": {}
         }
-        category_id = request.POST.get('category')
-        if category_id:
-            payload['category'] = category_id
-            
-        r = self.proxy_request(request, "staff/books/", method="POST", payload=payload)
+        
+        # Parse attributes JSON if provided
+        attr_json = request.POST.get('attributes_json')
+        if attr_json:
+            try:
+                payload['attributes'] = json.loads(attr_json)
+            except:
+                pass
+
+        r = self.proxy_request(request, "products/", method="POST", payload=payload)
         
         if r and r.status_code in (200, 201):
             return redirect('staff_dashboard')
         elif r:
-            return render(request, "staff_dashboard.html", {"error": r.json().get('error', 'Failed to add book')})
+            return render(request, "staff_dashboard.html", {"error": r.json().get('error', 'Failed to add product')})
         else:
             return render(request, "staff_dashboard.html", {"error": "Service Unavailable"})
 
 @method_decorator(csrf_exempt, name='dispatch')
 class StaffCategoryAddView(StaffRequiredMixin, BaseProxyView):
-    service_url = BOOK_SERVICE_URL
+    service_url = PRODUCT_SERVICE_URL
 
     def post(self, request):
         payload = {
             "name": request.POST.get('name'),
             "description": request.POST.get('description', ''),
         }
-        r = self.proxy_request(request, "categories/", method="POST", payload=payload)
-        
+        r = self.proxy_request(request, "products/categories/", method="POST", payload=payload)
+
         if r and r.status_code in (200, 201):
             return redirect('staff_dashboard')
         elif r:
@@ -119,12 +126,12 @@ class StaffCategoryAddView(StaffRequiredMixin, BaseProxyView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class StaffCategoryModifyView(StaffRequiredMixin, BaseProxyView):
-    service_url = BOOK_SERVICE_URL
+    service_url = PRODUCT_SERVICE_URL
 
     def put(self, request, pk):
         try:
             data = json.loads(request.body)
-            r = self.proxy_request(request, f"categories/{pk}/", method="PUT", payload=data)
+            r = self.proxy_request(request, f"products/categories/{pk}/", method="PUT", payload=data)
             if not r:
                 return JsonResponse({'error': 'Service Unavailable'}, status=503)
             return JsonResponse(r.json(), status=r.status_code)
@@ -132,7 +139,7 @@ class StaffCategoryModifyView(StaffRequiredMixin, BaseProxyView):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
     def delete(self, request, pk):
-        r = self.proxy_request(request, f"categories/{pk}/", method="DELETE")
+        r = self.proxy_request(request, f"products/categories/{pk}/", method="DELETE")
         if not r:
             return JsonResponse({'error': 'Service Unavailable'}, status=503)
         if r.status_code in (200, 204):
@@ -141,13 +148,17 @@ class StaffCategoryModifyView(StaffRequiredMixin, BaseProxyView):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class StaffBookModifyView(StaffRequiredMixin, BaseProxyView):
-    service_url = STAFF_SERVICE_URL
+class StaffProductModifyView(StaffRequiredMixin, BaseProxyView):
+    service_url = PRODUCT_SERVICE_URL
 
     def put(self, request, pk):
         try:
             data = json.loads(request.body)
-            r = self.proxy_request(request, f"staff/books/{pk}/", method="PUT", payload=data)
+            # Map legacy fields if they come from old JS
+            if 'title' in data and 'name' not in data: data['name'] = data['title']
+            if 'category' in data and 'category_id' not in data: data['category_id'] = data['category']
+            
+            r = self.proxy_request(request, f"products/{pk}/", method="PUT", payload=data)
             if not r:
                 return JsonResponse({'error': 'Service Unavailable'}, status=503)
             return JsonResponse(r.json(), status=r.status_code)
@@ -155,7 +166,7 @@ class StaffBookModifyView(StaffRequiredMixin, BaseProxyView):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
     def delete(self, request, pk):
-        r = self.proxy_request(request, f"staff/books/{pk}/", method="DELETE")
+        r = self.proxy_request(request, f"products/{pk}/", method="DELETE")
         if not r:
             return JsonResponse({'error': 'Service Unavailable'}, status=503)
         if r.status_code in (200, 204):

@@ -28,33 +28,33 @@ services:
     volumes:
       - ./customer-service:/app
 
-  # --- BOOK ---
-  book-db:
+  # --- PRODUCT ---
+  product-db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_DB=book_db
+      - POSTGRES_DB=product_db
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
     ports:
       - "5433:5432"
     volumes:
-      - book_data:/var/lib/postgresql/data
+      - product_data:/var/lib/postgresql/data
 
-  book-service:
-    build: ./book-service
+  product-service:
+    build: ./product-service
     ports:
       - "8002:8000"
     depends_on:
-      - book-db
+      - product-db
     environment:
       - DATABASE_ENGINE=django.db.backends.postgresql
-      - DATABASE_NAME=book_db
+      - DATABASE_NAME=product_db
       - DATABASE_USER=root
       - DATABASE_PASSWORD=root
-      - DATABASE_HOST=book-db
+      - DATABASE_HOST=product-db
       - DATABASE_PORT=5432
     volumes:
-      - ./book-service:/app
+      - ./product-service:/app
 
   # --- CART ---
   cart-db:
@@ -256,11 +256,45 @@ services:
       - "8010:8000"
     depends_on:
       - recommender-db
+      - neo4j
     environment:
       - MONGO_URL=mongodb://recommender-db:27017/
+      - NEO4J_URI=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=none
       - PYTHONUNBUFFERED=1
     volumes:
       - ./recommender-ai-service:/app
+
+  # --- INTERACTION ---
+  interaction-db:
+    image: mongo:latest
+    ports:
+      - "27020:27017"
+    volumes:
+      - interaction_data:/data/db
+
+  interaction-service:
+    build: ./interaction-service
+    ports:
+      - "8011:8000"
+    depends_on:
+      - interaction-db
+    environment:
+      - MONGO_URL=mongodb://interaction-db:27017/
+    volumes:
+      - ./interaction-service:/app
+
+  # --- KNOWLEDGE GRAPH (NEO4J) ---
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=none
+    volumes:
+      - neo4j_data:/data
 
   # --- API GATEWAY ---
   api-gateway:
@@ -274,7 +308,7 @@ services:
 
 volumes:
   customer_data:
-  book_data:
+  product_data:
   cart_data:
   staff_data:
   order_data:
@@ -283,3 +317,5 @@ volumes:
   comment_data:
   catalog_data:
   recommender_data:
+  interaction_data:
+  neo4j_data:

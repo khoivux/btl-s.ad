@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 import django.utils.timezone
 
 CART_SERVICE_URL = "http://cart-service:8000"
-BOOK_SERVICE_URL = "http://book-service:8000"
+PRODUCT_SERVICE_URL = "http://product-service:8000"
 PAY_SERVICE_URL  = "http://pay-service:8000"
 SHIP_SERVICE_URL = "http://ship-service:8000"
 CUSTOMER_SERVICE_URL = "http://customer-service:8000"
@@ -49,28 +49,29 @@ class OrderListCreate(APIView):
         if not cart_items:
             return Response({'error': 'Cart is empty'}, status=400)
 
-        # ── Step 2: Fetch book details & snapshot prices ───────────────────────
-        print(f"[order-service] Step 2: Fetching book prices (snapshot)")
+        # ── Step 2: Fetch product details & snapshot prices ───────────────────────
+        print(f"[order-service] Step 2: Fetching product prices (snapshot)")
         order_items_data = []
         total_amount = decimal.Decimal('0')
 
         for item in cart_items:
-            book_id = item['book_id']
+            product_id = item['product_id']
             quantity = item['quantity']
             try:
-                book_resp = requests.get(f"{BOOK_SERVICE_URL}/books/{book_id}/")
-                _log(f"fetch_book_{book_id}", book_resp)
-                book = book_resp.json()
-                unit_price = decimal.Decimal(str(book['price']))
+                product_resp = requests.get(f"{PRODUCT_SERVICE_URL}/products/{product_id}/")
+                _log(f"fetch_product_{product_id}", product_resp)
+                product = product_resp.json()
+                unit_price = decimal.Decimal(str(product['price']))
                 total_amount += unit_price * quantity
                 order_items_data.append({
-                    'book_id': book_id,
-                    'book_title': book.get('title', ''),
+                    'product_id': product_id,
+                    'product_name': product.get('name', ''),
+                    'item_image_url': product.get('image_url', ''),
                     'quantity': quantity,
                     'unit_price': unit_price,
                 })
             except Exception as e:
-                return Response({'error': f'book-service error for book {book_id}: {e}'}, status=503)
+                return Response({'error': f'product-service error for product {product_id}: {e}'}, status=503)
 
         # ── Step 2.5: Loyalty & Discounts ────────────────────────────────────
         print(f"[order-service] Step 2.5: Checking loyalty for customer {customer_id}")
@@ -220,15 +221,15 @@ class OrderListCreate(APIView):
         # ── Step 4.5: Update Stock (Inventory) ───────────────────────────────
         print(f"[order-service] Step 4.5: Updating stock for order items...")
         for item_data in order_items_data:
-            book_id = item_data['book_id']
+            product_id = item_data['product_id']
             qty = item_data['quantity']
             try:
-                inv_resp = requests.post(f"{BOOK_SERVICE_URL}/books/{book_id}/inventory/", json={
+                inv_resp = requests.post(f"{PRODUCT_SERVICE_URL}/products/{product_id}/inventory/", json={
                     'change': -qty
                 })
-                print(f"[order-service] Stock updated for book {book_id}: -{qty} (Status: {inv_resp.status_code})")
+                print(f"[order-service] Stock updated for product {product_id}: -{qty} (Status: {inv_resp.status_code})")
             except Exception as e:
-                print(f"[order-service] FAILED to update stock for book {book_id}: {e}")
+                print(f"[order-service] FAILED to update stock for product {product_id}: {e}")
 
         # ── Step 5: Defer Ship Service Call ────────────────────────────────────
         # Shipment creation is now deferred until Staff clicks "Mark Ready for Pickup" 
@@ -355,19 +356,19 @@ class OrderStatusUpdate(APIView):
 
 class CheckPurchase(APIView):
     """
-    GET /api/check-purchase/?customer_id={id}&book_id={id}
-    Returns {"has_purchased": true/false} checking all items of this customer's orders.
+    GET /api/check-purchase/?customer_id={id}&product_id={id}
+    Returns {"has_purchased": true/false}
     """
     def get(self, request):
         customer_id = request.query_params.get('customer_id')
-        book_id = request.query_params.get('book_id')
+        product_id = request.query_params.get('product_id') or request.query_params.get('book_id')  # backward compat
         
-        if not customer_id or not book_id:
-            return Response({'error': 'customer_id and book_id are required'}, status=400)
+        if not customer_id or not product_id:
+            return Response({'error': 'customer_id and product_id are required'}, status=400)
             
         has_purchased = OrderItem.objects.filter(
             order__customer_id=customer_id,
-            book_id=book_id
+            product_id=product_id
         ).exists()
         
         return Response({'has_purchased': has_purchased})

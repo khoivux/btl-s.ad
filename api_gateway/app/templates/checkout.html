@@ -237,11 +237,12 @@
             <div class="space-y-4 mb-6">
                 {% for item in cart_items %}
                 <div class="flex gap-3 items-start">
-                    <div class="w-12 h-16 bg-slate-50 rounded-lg overflow-hidden flex-shrink-0 border border-slate-100">
-                        <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+                    <div class="w-12 h-12 bg-slate-50 rounded-lg overflow-hidden flex-shrink-0 border border-slate-100">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="font-bold text-slate-800 text-sm truncate">{{ item.title }}</p>
+                        <p class="font-bold text-slate-800 text-sm truncate">{{ item.name }}</p>
+                        {% if item.category_name %}<p class="text-slate-400 text-xs truncate">{{ item.category_name }}</p>{% endif %}
                         <p class="text-slate-400 text-[10px]">{{ item.quantity }} × ${{ item.price }}</p>
                     </div>
                     <p class="font-black text-slate-800 text-sm">${{ item.subtotal }}</p>

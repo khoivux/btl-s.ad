@@ -6,40 +6,36 @@ def sync_all():
     MONGO_URL = os.environ.get("MONGO_URL", "mongodb://mongodb:27017/")
     client = MongoClient(MONGO_URL)
     db = client['bookstore']
-    books_collection = db['books']
+    products_collection = db['products']
     
-    # Try fetch books locally via service network if running in docker
-    book_service_url = os.environ.get("BOOK_SERVICE_URL", "http://book-service:8000")
-    print(f"Fetching books from: {book_service_url}/books/")
+    # Try fetch products locally via service network if running in docker
+    product_service_url = os.environ.get("PRODUCT_SERVICE_URL", "http://product-service:8000")
+    print(f"Fetching products from: {product_service_url}/products/")
     
     try:
-        r = requests.get(f"{book_service_url}/books/", timeout=10)
-        books = r.json()
+        r = requests.get(f"{product_service_url}/products/", timeout=10)
+        items = r.json()
         
         count = 0
-        for book in books:
-            book_id = book.get('id')
-            if not book_id:
+        for item in items.get('results', items) if isinstance(items, dict) else items:
+            p_id = item.get('id')
+            if not p_id:
                 continue
                 
-            # Remove fields that conflict with MongoDB reserved fields
-            if 'language' in book:
-                del book['language']
-                
-            book['_id'] = book_id
-            if 'id' in book:
-                del book['id']
+            item['_id'] = p_id
+            if 'id' in item:
+                del item['id']
             
-            books_collection.replace_one({'_id': book_id}, book, upsert=True)
+            products_collection.replace_one({'_id': p_id}, item, upsert=True)
             count += 1
             
-        print(f"Synced {count} books from book-service to MongoDB.")
+        print(f"Synced {count} products from product-service to MongoDB.")
         
         # Ensure indices
-        books_collection.create_index([("title", "text"), ("author", "text")])
+        products_collection.create_index([("name", "text"), ("description", "text")])
         print("Text index created successfully.")
     except Exception as e:
-        print(f"Error syncing books: {e}")
+        print(f"Error syncing products: {e}")
 
 if __name__ == "__main__":
     sync_all()

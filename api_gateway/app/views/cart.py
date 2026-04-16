@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from .base import BaseProxyView, CustomerRequiredMixin
 
 CART_SERVICE_URL = "http://cart-service:8000"
-BOOK_SERVICE_URL = "http://book-service:8000"
+PRODUCT_SERVICE_URL = "http://product-service:8000"
 
 class CartView(CustomerRequiredMixin, BaseProxyView):
     service_url = CART_SERVICE_URL
@@ -19,25 +19,26 @@ class CartView(CustomerRequiredMixin, BaseProxyView):
         r = self.proxy_request(request, f"carts/{customer_id}/", method="GET")
         items = r.json() if r and r.status_code == 200 else []
 
-        try:
-            b = requests.get(f"{BOOK_SERVICE_URL}/books/")
-            books = b.json() if b.status_code == 200 else []
-            book_map = {book['id']: book for book in books}
-        except Exception:
-            book_map = {}
-
+        # Fetch product info per item (efficient: individual requests)
         total_cart_price = 0
         for item in items:
-            book_info = book_map.get(item['book_id'], {})
-            item['title'] = book_info.get('title', 'Unknown Book')
-            price = float(book_info.get('price', 0))
+            pid = item.get('product_id') or item.get('book_id')
+            try:
+                p = requests.get(f"{PRODUCT_SERVICE_URL}/products/{pid}/", timeout=5)
+                product_info = p.json() if p and p.status_code == 200 else {}
+            except Exception:
+                product_info = {}
+            item['title'] = product_info.get('name', 'Unknown Product')
+            item['name'] = item['title']
+            item['category_name'] = product_info.get('category_name', '')
+            price = float(product_info.get('price', 0))
             item['price'] = f"{price:.2f}"
             item['subtotal'] = price * item['quantity']
             total_cart_price += item['subtotal']
 
         return render(request, "cart.html", {
-            "items": items, 
-            "customer_name": request.session.get('customer_name'), 
+            "items": items,
+            "customer_name": request.session.get('customer_name'),
             "total_cart_price": total_cart_price
         })
 
@@ -54,25 +55,26 @@ class AddCartItemView(BaseProxyView):
             data = json.loads(request.body)
             payload = {
                 "cart": data.get('cart_id') or request.session.get('customer_id'),
-                "book_id": data.get('book_id'),
+                "product_id": data.get('product_id') or data.get('book_id'),
                 "quantity": data.get('quantity', 1)
             }
-            
+
             r = self.proxy_request(request, "carts/items/", method="POST", payload=payload)
             if not r:
                 return JsonResponse({'error': 'Service Unavailable'}, status=503)
-            
+
             # Log Interaction
             if r.status_code in (200, 201):
                 try:
                     customer_id = request.session.get('customer_id')
-                    requests.post(f"http://customer-service:8000/customers/{customer_id}/interaction-logs/", json={
-                        'book_id': payload['book_id'],
-                        'action_type': 'ADD_TO_CART'
-                    })
+                    requests.post(
+                        f"http://customer-service:8000/customers/{customer_id}/interaction-logs/",
+                        json={'book_id': payload['product_id'], 'action_type': 'ADD_TO_CART'},
+                        timeout=2
+                    )
                 except Exception:
                     pass
-            
+
             return JsonResponse(r.json(), status=r.status_code)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)

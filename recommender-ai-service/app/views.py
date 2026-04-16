@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -80,9 +81,9 @@ class ConsultantChatView(APIView):
         response['X-Accel-Buffering'] = 'no'
         return response
 
-class VectorIndexBooksView(APIView):
+class VectorIndexProductsView(APIView):
     """
-    Endpoint to trigger re-indexing of all books into ChromaDB Knowledge Base.
+    Endpoint to trigger re-indexing of all products into ChromaDB Knowledge Base.
     """
     def post(self, request):
         try:
@@ -91,41 +92,34 @@ class VectorIndexBooksView(APIView):
             print("[INDEXER] Đang xóa bộ nhớ cũ của ChromaDB...")
             vector_db.clear_all()
 
-            # ─── Bước 1: Thu thập 106 cuốn sách từ Catalog Service ────────────
-            # Gọi API sang catalog-service để lấy thông tin chi tiết nhất của mọi cuốn sách.
-            print("[INDEXER] Đang gọi Catalog Service lấy 100% kho sách...")
-            r = requests.get(f"{CATALOG_SERVICE_URL}/books/?limit=1000")
+            # ─── Bước 1: Thu thập sản phẩm từ Catalog Service ────────────
+            # Gọi API sang catalog-service để lấy thông tin chi tiết nhất của mọi sản phẩm.
+            print("[INDEXER] Đang gọi Catalog Service lấy 100% sản phẩm...")
+            r = requests.get(f"{CATALOG_SERVICE_URL}/products/?limit=1000")
             if r.status_code != 200:
                 return Response({'error': 'Không thể kết nối Catalog Service'}, status=500)
             
             data = r.json()
-            books = data.get('results', [])
+            products = data.get('results', [])
             
             ids, docs, metas = [], [], []
-            for b in books:
-                # Trích xuất nội dung văn bản để AI "học" (nhồi thêm Tác giả, Nhà XB, Mô tả)
-                print(f"[INDEXER] Chuẩn bị dữ liệu cho cuốn: {b['title']} (ID: {b['id']})")
+            for p in products:
+                # Trích xuất nội dung văn bản để AI "học"
+                print(f"[INDEXER] Chuẩn bị dữ liệu cho sản phẩm: {p['name']} (ID: {p['id']})")
                 content = (
-                    f"Tên sách: {b['title']}\n"
-                    f"Tác giả: {b.get('author', 'Không rõ')}\n"
-                    f"Giá bán: {b.get('price', 'Liên hệ')} $\n"
-                    f"Danh mục: {b.get('category_name', 'Chung')}\n"
-                    f"Ngôn ngữ: {b.get('language_name', 'Tiếng Việt')}\n"
-                    f"Định dạng: {b.get('format_name', 'Bìa mềm')}\n"
-                    f"Số trang: {b.get('page_count', 'N/A')}\n"
-                    f"Nhà xuất bản: {b.get('publisher_name', 'N/A')}\n"
-                    f"ISBN: {b.get('isbn', 'N/A')}\n"
-                    f"Mô tả: {b.get('description', '')}"
+                    f"Tên sản phẩm: {p['name']}\n"
+                    f"Giá bán: {p.get('price', 'Liên hệ')} $\n"
+                    f"Danh mục: {p.get('category_name', 'Chung')}\n"
+                    f"Mô tả: {p.get('description', '')}\n"
+                    f"Thông số: {json.dumps(p.get('attributes', {}))}"
                 )
-                ids.append(str(b['id']))
+                ids.append(str(p['id']))
                 docs.append(content)
                 metas.append({
-                    "id": b['id'],
-                    "title": b['title'],
-                    "author": b.get('author', 'Không rõ'),
-                    "category": b.get('category_name', 'General'),
-                    "price": float(b.get('price', 0)),
-                    "language": b.get('language_name', 'Vietnamese')
+                    "id": p['id'],
+                    "title": p['name'],
+                    "category": p.get('category_name', 'General'),
+                    "price": float(p.get('price', 0))
                 })
             
             # ─── Bước 2: Nạp sách vào Vector DB (Chia mẻ mini-batch) ───────────
@@ -136,9 +130,9 @@ class VectorIndexBooksView(APIView):
                 batch_docs = docs[i:i + batch_size]
                 batch_metas = metas[i:i + batch_size]
                 
-                print(f"[INDEXER] Đang nạp Mẻ sách ({i+1}-{i+len(batch_ids)}/{len(ids)}) vào Vector DB...")
+                print(f"[INDEXER] Đang nạp Mẻ sản phẩm ({i+1}-{i+len(batch_ids)}/{len(ids)}) vào Vector DB...")
                 try:
-                    vector_db.upsert_books(batch_ids, batch_docs, batch_metas)
+                    vector_db.upsert_products(batch_ids, batch_docs, batch_metas)
                 except Exception as e:
                     print(f"[INDEXER] Mẻ nạp bị lỗi, thử lại sau 10 giây: {e}")
                     time.sleep(10) # Long wait if hit limit
@@ -163,10 +157,10 @@ class VectorIndexBooksView(APIView):
             
             if kb_ids:
                 print(f"[INDEXER] Đang nạp {len(kb_ids)} tệp kiến thức bổ trợ vào Vector DB...")
-                vector_db.upsert_books(kb_ids, kb_docs, kb_metas)
+                vector_db.upsert_products(kb_ids, kb_docs, kb_metas)
 
             print("[INDEXER] 🏆 QUY TRÌNH NẠP KIẾN THỨC HOÀN TẤT 100%!")
-            return Response({'status': 'Đã hoàn tất nạp 100% kho tri thức sách và chính sách.'})
+            return Response({'status': 'Đã hoàn tất nạp 100% kho tri thức sản phẩm và chính sách.'})
         except Exception as e:
             print(f"[INDEXER LỖI] {e}")
             return Response({'error': str(e)}, status=500)

@@ -1,61 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Results - MicroBookstore</title>
-    <!-- Tailwind CSS -->
+    <title>Search Products - MicroStore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        primary: '#4F46E5', // vibrant indigo
-                        secondary: '#F59E0B', // energetic amber
-                        accent: '#E11D48', // bold rose
-                    },
-                    fontFamily: {
-                        sans: ['Nunito Sans', 'sans-serif'],
-                        heading: ['Rubik', 'sans-serif'],
-                    }
+                    colors: { primary: '#4F46E5', secondary: '#F59E0B', accent: '#E11D48' },
+                    fontFamily: { sans: ['Nunito Sans', 'sans-serif'], heading: ['Rubik', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;500;600;700&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
-
     {% include 'navbar.html' %}
 
-    <!-- Main Content Grid -->
     <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col md:flex-row gap-8">
-        
         <!-- Sidebar Filters -->
         <aside class="w-full md:w-64 shrink-0">
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm sticky top-24">
                 <h3 class="font-heading font-bold text-lg mb-6 flex items-center gap-2">
                     <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                    Filters & Search
+                    Filters
                 </h3>
-                
                 <form action="/search/" method="GET" class="space-y-6">
-                    <!-- Search Input -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Search Term</label>
-                        <input type="text" name="q" value="{{ q }}" placeholder="Title, author..." 
+                        <input type="text" name="q" value="{{ q }}" placeholder="Product name..." 
                             class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
                     </div>
-
-                    <!-- Category Filter -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Category</label>
                         <select name="category_id" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm text-slate-700">
@@ -65,8 +45,6 @@
                             {% endfor %}
                         </select>
                     </div>
-
-                    <!-- Price Range -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Price Range ($)</label>
                         <div class="flex items-center gap-2">
@@ -77,8 +55,6 @@
                                 class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm">
                         </div>
                     </div>
-
-                    <!-- Sorting -->
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Sort By</label>
                         <select name="sort" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm text-slate-700">
@@ -87,15 +63,9 @@
                             <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
                         </select>
                     </div>
-
-                    <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors shadow-md">
-                        Apply Filters
-                    </button>
-                    
-                    {% if q or min_price or max_price or sort %}
-                    <a href="/search/" class="block text-center mt-3 text-sm text-slate-500 hover:text-indigo-600 font-medium">
-                        Clear all filters
-                    </a>
+                    <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors shadow-md">Apply Filters</button>
+                    {% if q or min_price or max_price or sort or category_id %}
+                    <a href="/search/" class="block text-center mt-3 text-sm text-slate-500 hover:text-indigo-600 font-medium">Clear all filters</a>
                     {% endif %}
                 </form>
             </div>
@@ -106,136 +76,67 @@
             <div class="mb-6 flex justify-between items-end border-b border-slate-200 pb-4">
                 <div>
                     <h2 class="text-2xl font-heading font-black text-slate-900">Search Results</h2>
-                    {% if q %}
-                    <p class="text-slate-500 mt-1">Showing results for "<span class="font-bold text-slate-800">{{ q }}</span>"</p>
-                    {% endif %}
+                    {% if q %}<p class="text-slate-500 mt-1">Found products for "<span class="font-bold text-slate-800">{{ q }}</span>"</p>{% endif %}
                 </div>
-                <div class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-                    {{ books|length }} books found
-                </div>
+                <div class="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full">{{ books|length }} items</div>
             </div>
 
-            <!-- Book Grid -->
+            <!-- Product Grid -->
             <div class="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                 {% for book in books %}
-                <article class="group bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col h-full relative">
-                    
-                    <a href="/books/{{ book.id }}/" class="aspect-[2/3] w-full bg-slate-100 rounded-xl mb-4 overflow-hidden relative group-hover:opacity-90 transition-opacity">
-                        <img src="{{ book.image_url }}" alt="{{ book.title }}" class="w-full h-full object-cover">
-                        <!-- Quick Add Overlay -->
+                <article class="group bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 flex flex-col h-full relative">
+                    <a href="/products/{{ book.id }}/" class="aspect-square w-full bg-slate-100 rounded-xl mb-4 overflow-hidden relative group-hover:opacity-90 transition-opacity">
+                        <img src="{{ book.image_url }}" alt="{{ book.name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute inset-x-0 bottom-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 duration-300">
                             <button onclick="event.preventDefault(); addToCart({{ book.id }})" 
-                                class="w-full bg-indigo-600 text-white font-bold py-2 rounded-lg hover:bg-indigo-700 shadow-lg flex items-center justify-center gap-2 cursor-pointer">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                Add
-                            </button>
+                                class="w-full bg-indigo-600 text-white font-bold py-2 rounded-lg hover:bg-indigo-700 shadow-lg flex items-center justify-center gap-2 text-xs">Add to Cart</button>
                         </div>
                     </a>
-
                     <div class="flex-1 flex flex-col">
-                        {% if book.category_name %}
-                        <div class="mb-2">
-                            <span class="inline-block px-2 py-1 bg-emerald-100/80 text-emerald-700 text-[10px] font-black uppercase tracking-wider rounded-md">
-                                {{ book.category_name }}
-                            </span>
-                        </div>
-                        {% endif %}
-                        <a href="/books/{{ book.id }}/" class="text-lg font-bold text-slate-800 leading-snug mb-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">
-                            {{ book.title }}
-                        </a>
-                        <p class="text-sm text-slate-500 mb-3">{{ book.author }}</p>
+                        {% if book.category_name %}<span class="inline-block px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider rounded mb-2">{{ book.category_name }}</span>{% endif %}
+                        <a href="/products/{{ book.id }}/" class="text-sm font-bold text-slate-800 leading-snug mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">{{ book.name }}</a>
                         <div class="mt-auto flex items-center justify-between">
                             <p class="text-lg font-black text-slate-900">${{ book.price }}</p>
-                            <button onclick="addToCart({{ book.id }})" class="md:hidden bg-slate-100 p-2 rounded-full text-indigo-600 hover:bg-indigo-100">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            </button>
+                            <button onclick="addToCart({{ book.id }})" class="md:hidden bg-slate-100 p-2 rounded-full text-indigo-600 hover:bg-indigo-100"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></button>
                         </div>
                     </div>
                 </article>
                 {% endfor %}
             </div>
 
-            <!-- Pagination -->
-            {% if total_pages > 1 %}
-            <div class="mt-12 flex justify-center items-center gap-4">
-                {% if has_prev %}
-                <a href="?q={{ q }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}&category_id={{ category_id }}&page={{ current_page|add:"-1" }}" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 font-bold rounded-xl hover:bg-slate-50 transition-all flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    Previous
-                </a>
-                {% endif %}
-                
-                <span class="text-sm font-black text-slate-400 bg-slate-100 px-4 py-2 rounded-lg tracking-widest uppercase">
-                    Page {{ current_page }} / {{ total_pages }}
-                </span>
-                
-                {% if has_next %}
-                <a href="?q={{ q }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}&category_id={{ category_id }}&page={{ current_page|add:"1" }}" class="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center gap-2">
-                    Next
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </a>
-                {% endif %}
-            </div>
-            {% endif %}
-        
             {% if not books %}
             <div class="py-20 text-center bg-white rounded-2xl border border-slate-200 mt-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 text-slate-400 mb-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800 mb-2">No matching books found</h3>
-                <p class="text-slate-500 mb-6">Try adjusting your search criteria or price range.</p>
-                <a href="/search/" class="inline-block bg-indigo-50 text-indigo-700 font-semibold px-6 py-2 rounded-full hover:bg-indigo-100 transition-colors">
-                    Clear all filters
-                </a>
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 text-slate-400 mb-4"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>
+                <h3 class="text-xl font-bold text-slate-800 mb-2">No products found</h3>
+                <p class="text-slate-500 mb-6">Adjust filters or search for something else.</p>
+                <a href="/search/" class="inline-block bg-indigo-50 text-indigo-700 font-semibold px-6 py-2 rounded-full hover:bg-indigo-100 transition-colors">Clear filters</a>
             </div>
             {% endif %}
-
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 mt-auto py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
-            &copy; 2026 MicroBookstore. Build with microservices.
-        </div>
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">&copy; 2026 MicroStore. Built with microservices.</div>
     </footer>
 
-    <!-- Global JS Action -->
     <script>
-        async function addToCart(bookId) {
+        async function addToCart(productId) {
             try {
                 const response = await fetch(`/api/carts/items/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ book_id: bookId, quantity: 1 })
+                    body: JSON.stringify({ product_id: productId, quantity: 1 })
                 });
-
-                if (response.status === 401) {
-                    window.location.href = '/login/?next=/search/';
-                    return;
-                }
-
+                if (response.status === 401) { window.location.href = '/login/?next=/search/'; return; }
                 if (response.ok) {
                     const toast = document.createElement('div');
                     toast.className = 'fixed bottom-4 right-4 bg-slate-800 text-white px-6 py-3 rounded-lg shadow-xl translate-y-10 opacity-0 transition-all duration-300 z-50 flex items-center gap-3';
-                    toast.innerHTML = '<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Added to cart';
+                    toast.innerHTML = 'Added to cart';
                     document.body.appendChild(toast);
-                    
                     requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
-                    
-                    setTimeout(() => {
-                        toast.classList.add('translate-y-10', 'opacity-0');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 3000);
-                } else {
-                    const data = await response.json();
-                    alert(`Cannot add to cart. Error: ${data.error || 'Server error'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('System error occurred.');
-            }
+                    setTimeout(() => { toast.classList.add('translate-y-10', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3000);
+                } else { alert('Error adding to cart'); }
+            } catch (error) { console.error(error); }
         }
     </script>
 </body>

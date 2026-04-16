@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from .base import BaseProxyView, CustomerRequiredMixin
 
 CART_SERVICE_URL = "http://cart-service:8000"
-BOOK_SERVICE_URL = "http://book-service:8000"
+PRODUCT_SERVICE_URL = "http://product-service:8000"
 ORDER_SERVICE_URL = "http://order-service:8000"
 CUSTOMER_SERVICE_URL = "http://customer-service:8000"
 SHIP_SERVICE_URL = "http://ship-service:8000"
@@ -25,17 +25,18 @@ class CheckoutPageView(CustomerRequiredMixin, BaseProxyView):
             raw_items = r.json() if r and r.status_code == 200 else []
             
             for item in raw_items:
-                self.service_url = BOOK_SERVICE_URL
-                book_r = self.proxy_request(request, f"books/{item['book_id']}/", method="GET")
-                book = book_r.json() if book_r and book_r.status_code == 200 else {}
+                self.service_url = PRODUCT_SERVICE_URL
+                prod_r = self.proxy_request(request, f"products/{item['product_id']}/", method="GET")
+                product = prod_r.json() if prod_r and prod_r.status_code == 200 else {}
                 
-                subtotal = float(book.get('price', 0)) * item['quantity']
+                subtotal = float(product.get('price', 0)) * item['quantity']
                 total += subtotal
                 cart_items.append({
-                    'book_id': item['book_id'],
-                    'title': book.get('title', ''),
-                    'author': book.get('author', ''),
-                    'price': book.get('price', 0),
+                    'product_id': item['product_id'],
+                    'name': product.get('name', ''),
+                    'category_name': product.get('category_name', ''),
+                    'image_url': product.get('image_url', ''),
+                    'price': product.get('price', 0),
                     'quantity': item['quantity'],
                     'subtotal': round(subtotal, 2),
                 })

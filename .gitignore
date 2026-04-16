@@ -60,3 +60,12 @@ desktop.ini
 # Agent specific
 .agent/
 .gemini/
+
+# AI/ML & Data Resources
+chroma_db/
+*.pth
+*.h5
+behavior_dataset.csv
+scratch_check.py
+**/neo4j/data/
+**/neo4j/logs/

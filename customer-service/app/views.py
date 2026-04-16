@@ -234,11 +234,11 @@ class SearchHistoryView(APIView):
 @method_decorator(csrf_exempt, name='dispatch')
 class InteractionLogView(APIView):
     def post(self, request, customer_id):
-        book_id = request.data.get('book_id')
+        product_id = request.data.get('product_id') or request.data.get('book_id')
         action_type = request.data.get('action_type')
-        if not book_id or not action_type:
-            return Response({'error': 'book_id and action_type are required'}, status=400)
-        log = InteractionLog.objects.create(customer_id=customer_id, book_id=book_id, action_type=action_type)
+        if not product_id or not action_type:
+            return Response({'error': 'product_id and action_type are required'}, status=400)
+        log = InteractionLog.objects.create(customer_id=customer_id, product_id=product_id, action_type=action_type)
         return Response(InteractionLogSerializer(log).data, status=201)
 
 @method_decorator(csrf_exempt, name='dispatch')

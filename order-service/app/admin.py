@@ -9,7 +9,7 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'order', 'book_id', 'book_title', 'quantity', 'unit_price')
+    list_display = ('id', 'order', 'product_id', 'product_name', 'quantity', 'unit_price')
 
 @admin.register(Voucher)
 class VoucherAdmin(admin.ModelAdmin):

@@ -76,17 +76,17 @@ class SearchHistory(models.Model):
 
 class InteractionLog(models.Model):
     ACTION_TYPES = [
-        ('VIEW_BOOK', 'Viewed Book'),
+        ('VIEW_PRODUCT', 'Viewed Product'),
         ('ADD_TO_CART', 'Added to Cart'),
         ('REMOVE_FROM_CART', 'Removed from Cart')
     ]
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='interaction_logs')
-    book_id = models.IntegerField()
+    product_id = models.IntegerField()
     action_type = models.CharField(max_length=20, choices=ACTION_TYPES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.action_type} for Book {self.book_id} - {self.customer.name}"
+        return f"{self.action_type} for Product {self.product_id} - {self.customer.name}"
 
 class ChatMessage(models.Model):
     ROLE_CHOICES = [

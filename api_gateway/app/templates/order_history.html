@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Orders - MicroBookstore</title>
+    <title>My Orders - MicroStore</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;600;700&family=Rubik:wght@700;800&display=swap" rel="stylesheet">
 </head>
@@ -47,7 +47,7 @@
                     </div>
                     <div>
                         <p class="text-slate-500 text-xs">Items</p>
-                        <p class="font-bold text-slate-800">{{ order.items|length }} books</p>
+                        <p class="font-bold text-slate-800">{{ order.items|length }} items</p>
                     </div>
                     <div>
                         <p class="text-slate-500 text-xs text-right">Date</p>
@@ -116,8 +116,8 @@
         <div class="text-center py-20">
             <div class="text-6xl mb-4 text-slate-200">📭</div>
             <h2 class="text-2xl font-bold text-slate-600">No orders yet</h2>
-            <p class="text-slate-500 mt-2 italic">Your bookshelf is feeling a bit lonely...</p>
-            <a href="/books/" class="mt-8 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-black px-10 py-4 rounded-2xl transition-all shadow-lg hover:shadow-indigo-200">
+            <p class="text-slate-500 mt-2 italic">You haven't placed any orders yet...</p>
+            <a href="/products/" class="mt-8 inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-black px-10 py-4 rounded-2xl transition-all shadow-lg hover:shadow-indigo-200">
                 Start Shopping
             </a>
         </div>

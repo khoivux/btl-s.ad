@@ -37,7 +37,7 @@ class SearchHistorySerializer(serializers.ModelSerializer):
 class InteractionLogSerializer(serializers.ModelSerializer):
     class Meta:
         model = InteractionLog
-        fields = ['id', 'customer', 'book_id', 'action_type', 'created_at']
+        fields = ['id', 'customer', 'product_id', 'action_type', 'created_at']
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     class Meta:
