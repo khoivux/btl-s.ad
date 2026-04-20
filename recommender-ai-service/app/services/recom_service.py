@@ -17,11 +17,10 @@ def get_recommendations(customer_id=None):
     if customer_id:
         print(f"[RECOM] 🧠 Activating 13-dim Neural Engine for User: {customer_id}")
         try:
-            ai_recs = behavior_trainer.get_recommendations(customer_id, top_k=10)
+            ai_recs = behavior_trainer.get_sequential_recommendations(customer_id, top_k=10)
             if ai_recs:
                 # Format for frontend
                 for r in ai_recs:
-                    r['id'] = r['product_id']
                     r['final_score'] = r['score']
                 return ai_recs
         except Exception as e:

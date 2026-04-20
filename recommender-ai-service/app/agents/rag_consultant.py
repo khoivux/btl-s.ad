@@ -2,15 +2,18 @@ import google.generativeai as genai
 from django.conf import settings
 from ..ai_core.neo4j_db import neo4j_db
 
-# Configure Google SDK directly for maximum stability
-genai.configure(api_key=settings.GOOGLE_API_KEY)
+from ..ai_core.neo4j_db import neo4j_db
+
 
 class ConsultantAgent:
     def __init__(self):
-        # Fallback to the latest available flash model to avoid 0 or strict quotas on older models.
-        self.model = genai.GenerativeModel('models/gemini-flash-latest')
+        pass
 
     def get_advice_stream(self, user_id, user_message, chat_history_list=None):
+        # Ensure latest key is used
+        genai.configure(api_key=settings.GOOGLE_API_KEY)
+        self.model = genai.GenerativeModel('models/gemini-flash-latest')
+
         # 1. Persona and Context
         print(f"[AI-LOG] Fetching GraphRAG and LSTM context for user {user_id}...")
         
@@ -97,16 +100,20 @@ HÃY BẮT ĐẦU TƯ VẤN NGAY (Bằng Tiếng Việt, ấm áp và lôi cuố
         
         # 5. Stream output word by word for 'typing' effect
         try:
+            print(f"[AI-LOG] Calling genai.generate_content...")
             response = self.model.generate_content(full_prompt, stream=True)
+            print(f"[AI-LOG] Stream response received. Starting iteration...")
             import time
             for chunk in response:
                 if chunk.text:
-                    print(f"[AI-LOG] Chunk received: {chunk.text[:20]}...")
+                    print(f"[AI-LOG] Chunk: {chunk.text[:15]}...")
                     words = chunk.text.split(' ')
                     for i, word in enumerate(words):
                         space = ' ' if i < len(words) - 1 else ''
                         yield word + space
-                        time.sleep(0.015)
+                        time.sleep(0.01)
+            print(f"[AI-LOG] Stream finished successfully.")
+
         except Exception as e:
             print(f"[STREAM ERROR] Fallback triggered due to: {e}")
             yield "Chào bạn! Thành thật xin lỗi vì hệ thống đang gặp chút gián đoạn kỹ thuật nhỏ. Hãy thử lại sau ít phút nhé!"

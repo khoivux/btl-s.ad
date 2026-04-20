@@ -219,7 +219,17 @@ class RecommenderProxyView(BaseProxyView):
     service_url = "http://recommender-ai-service:8000"
 
     def post(self, request, path):
-        return self.proxy_request(request, f"api/{path}", method="POST")
+        r = self.proxy_request(request, f"api/{path}", method="POST", payload=json.loads(request.body) if request.body else {})
+        if not r:
+            return JsonResponse({'error': 'Service Unavailable'}, status=503)
+        return JsonResponse(r.json(), status=r.status_code, safe=False)
 
     def get(self, request, path):
-        return self.proxy_request(request, f"api/{path}", method="GET")
+        r = self.proxy_request(request, f"api/{path}", method="GET")
+        if not r:
+            return JsonResponse({'error': 'Service Unavailable'}, status=503)
+        try:
+            return JsonResponse(r.json(), status=r.status_code, safe=False)
+        except:
+            return JsonResponse({'error': 'Invalid Response'}, status=502)
+

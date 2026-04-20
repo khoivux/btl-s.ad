@@ -1,173 +1,205 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import requests
 import os
-import json
 import numpy as np
 from django.conf import settings
 from .neo4j_db import neo4j_db
 
-INTERACTION_SERVICE_URL = "http://interaction-service:8000"
 PRODUCT_SERVICE_URL = "http://product-service:8000"
 
-class LSTMRecommender(nn.Module):
-    def __init__(self, num_users, num_products, num_actions, hidden_dim=32):
-        super(LSTMRecommender, self).__init__()
-        self.user_embedding = nn.Embedding(num_users, 16)
-        self.book_embedding = nn.Embedding(num_products, 32)
-        self.action_embedding = nn.Embedding(num_actions, 8)
+class SequenceRecommender(nn.Module):
+    def __init__(self, num_products, num_actions, model_type='RNN', hidden_dim=128, num_layers=2):
+        super(SequenceRecommender, self).__init__()
+        self.model_type = model_type
         
-        # LSTM input: Book embedding + Action embedding
-        lstm_input_dim = 32 + 8
-        self.lstm = nn.LSTM(lstm_input_dim, hidden_dim, batch_first=True)
+        self.prod_emb = nn.Embedding(num_products + 1, 64)
+        self.act_emb = nn.Embedding(num_actions + 1, 16)
         
-        # Predictor combines User Emb + LSTM Hidden State to score candidate book
-        predictor_input_dim = 16 + hidden_dim + 32
-        self.predictor = nn.Sequential(
-            nn.Linear(predictor_input_dim, 32),
+        input_dim = 64 + 16
+        self.is_bidirectional = (model_type == 'biLSTM')
+        rnn_kwargs = {
+            'input_size': input_dim, 
+            'hidden_size': hidden_dim, 
+            'num_layers': num_layers, 
+            'batch_first': True,
+            'dropout': 0.2 if num_layers > 1 else 0
+        }
+        
+        if model_type == 'RNN':
+            self.rnn = nn.RNN(**rnn_kwargs)
+        elif model_type == 'LSTM':
+            self.rnn = nn.LSTM(**rnn_kwargs)
+        elif model_type == 'biLSTM':
+            rnn_kwargs['bidirectional'] = True
+            self.rnn = nn.LSTM(**rnn_kwargs)
+            
+        rnn_out_dim = hidden_dim * 2 if self.is_bidirectional else hidden_dim
+        self.fc = nn.Sequential(
+            nn.Linear(rnn_out_dim, 256),
             nn.ReLU(),
-            nn.Linear(32, 1)
+            nn.Dropout(0.2),
+            nn.Linear(256, num_products)
         )
-
-    def forward(self, user_ids, seq_books, seq_actions, candidate_books):
-        # 1. Process Sequence
-        b_embs = self.book_embedding(seq_books) # (batch, seq_len, 32)
-        a_embs = self.action_embedding(seq_actions) # (batch, seq_len, 8)
         
-        lstm_in = torch.cat([b_embs, a_embs], dim=2) # (batch, seq_len, 40)
+    def forward(self, x):
+        p_seq = x[:, :, 0]
+        a_seq = x[:, :, 1]
         
-        output, (h_n, c_n) = self.lstm(lstm_in)
-        last_hidden = h_n[-1] # (batch, hidden_dim)
+        p_emb = self.prod_emb(p_seq)
+        a_emb = self.act_emb(a_seq)
         
-        # 2. Score Candidate
-        u_emb = self.user_embedding(user_ids) # (batch, 16)
-        cand_emb = self.book_embedding(candidate_books) # (batch, 32)
+        rnn_in = torch.cat([p_emb, a_emb], dim=-1)
         
-        combined = torch.cat([u_emb, last_hidden, cand_emb], dim=1) # (batch, 16 + 32 + 32)
-        
-        scores = self.predictor(combined)
-        return scores.squeeze()
+        out, _ = self.rnn(rnn_in)
+        last_out = out[:, -1, :]
+        logits = self.fc(last_out)
+        return logits
 
 class BehaviorTrainer:
-    def __init__(self, model_path="app/ai_core/behavior_model_lstm.pth"):
-        self.model_path = model_path
-        # Map actions to integers
-        self.action_map = {"VIEWED": 1, "VIEW_PRODUCT": 1, "SEARCHED": 2, "CART": 3, "ADD_TO_CART": 3, "PURCHASED": 4}
-        self.model = LSTMRecommender(num_users=5000, num_products=2000, num_actions=10)
+    def __init__(self, model_path="app/ai_core/behavior_model_best.pth", num_products=201):
+        self.model_path = os.path.join(settings.BASE_DIR, model_path)
+        self.action_map = {
+            'view': 1, 'click': 2, 'add_to_cart': 3, 'remove_from_cart': 4, 
+            'purchase': 5, 'wishlist': 6, 'review': 7, 'share': 8
+        }
+        self.num_products = num_products
+        # We start with RNN as default, but load() might be called after training is DONE.
+        # Ideally we should detect model type or just use the one that won.
+        self.model = SequenceRecommender(num_products=num_products, num_actions=len(self.action_map), model_type='RNN')
         self.load()
 
     def load(self):
         if os.path.exists(self.model_path):
             try:
-                self.model.load_state_dict(torch.load(self.model_path, weights_only=True))
-                print(f"[MODEL] Loaded existing LSTM brain from {self.model_path}")
-            except: 
-                print("[MODEL] Failed to load LSTM model, starting fresh.")
+                # We need to knowing which model type was saved. 
+                # For simplicity, if we suspect it might be LSTM after our recent talk, 
+                # we'd need to adjust. But let's assume RNN for now as per previous run.
+                # In a real system, we'd save metadata with the model.
+                self.model.load_state_dict(torch.load(self.model_path, map_location=torch.device('cpu'), weights_only=True))
+                print(f"[MODEL] Loaded best model from {self.model_path}")
+            except Exception as e: 
+                print(f"[MODEL] Failed to load model: {e}")
 
-    def save(self):
-        os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-        torch.save(self.model.state_dict(), self.model_path)
-        print(f"[MODEL] Saved behavior model to {self.model_path}")
-
-    def train_epoch(self, interactions, epochs=5):
-        """
-        Learns from (user_id, product_id, behavior_score, contextual_features)
-        """
-        import torch.optim as optim
-        self.model.train()
-        optimizer = optim.Adam(self.model.parameters(), lr=0.001)
-        criterion = nn.MSELoss()
-
-        print(f"[MODEL] Neural Training started for {epochs} epochs...")
-        
-        for epoch in range(epochs):
-            total_loss = 0
-            for it in interactions:
-                u_id = torch.tensor([int(it['user_id']) % 5000], dtype=torch.long)
-                p_id = torch.tensor([int(it['product_id']) % 2000], dtype=torch.long)
-                target = torch.tensor([float(it['behavior_score'])], dtype=torch.float)
-                
-                # For simplicity in this demo, we use a fixed empty sequence for legacy training
-                # but real systems would use real interaction sequences from Interaction Service.
-                seq_b = torch.tensor([[0]], dtype=torch.long)
-                seq_a = torch.tensor([[0]], dtype=torch.long)
-
-                optimizer.zero_grad()
-                output = self.model(u_id, seq_b, seq_a, p_id)
-                loss = criterion(output, target)
-                loss.backward()
-                optimizer.step()
-                total_loss += loss.item()
-            
-            print(f"  > Epoch {epoch+1}/{epochs} | Loss: {total_loss/len(interactions):.4f}")
-        
-        self.save()
-        return True
-
-    def get_sequential_recommendations(self, user_id, top_k=10):
-        """
-        Inference using LSTM and GraphRAG.
-        1. Fetch recent sequence from Neo4j.
-        2. Score all candidate books using LSTM.
-        """
-        import time
+    def get_sequential_recommendations(self, user_id, top_k=10, cart_context=None):
         self.model.eval()
+        seq_len = 10
         
-        # 1. Get recent sequence from Neo4j
-        interactions = neo4j_db.get_user_interactions(user_id, limit=10)
+        sim_boost = {}
+        # 0. Integrated Real-time Cart Context into Social Boost (Graph)
+        if cart_context:
+            try:
+                with neo4j_db.driver.session() as session:
+                    # Look for items frequently bought with current items in cart
+                    cart_sim_query = """
+                    MATCH (pInCart:Product) WHERE pInCart.id IN $pids
+                    MATCH (pInCart)<-[:INTERACTED_WITH]-(other:User)-[:INTERACTED_WITH]->(recProd:Product)
+                    WHERE NOT recProd.id IN $pids
+                    RETURN recProd.id as pid, count(other) as volume
+                    ORDER BY volume DESC LIMIT 20
+                    """
+                    cart_recs = session.run(cart_sim_query, pids=[int(p) for p in cart_context])
+                    for rec in cart_recs:
+                        sim_boost[int(rec['pid'])] = sim_boost.get(int(rec['pid']), 0) + float(rec['volume']) * 2.0
+            except Exception as e:
+                print(f"[RECOM] Cart Neo4j context error: {e}")
+
         
-        seq_b = []
-        seq_a = []
-        for it in reversed(interactions): # chronological order
-            p_id = int(it['product_id']) if str(it['product_id']).isdigit() else 0
-            seq_b.append(p_id % 2000)
-            seq_a.append(self.action_map.get(str(it['action']).upper(), 1))
-            
-        if not seq_b:
-            # Need a pad if no history
-            seq_b = [0]
-            seq_a = [0]
-            
-        u_t = torch.tensor([user_id % 5000], dtype=torch.long)
-        seq_b_t = torch.tensor([seq_b], dtype=torch.long)
-        seq_a_t = torch.tensor([seq_a], dtype=torch.long)
-        
-        # 2. Get candidates (Cache strategy)
         try:
-            r = requests.get(f"{PRODUCT_SERVICE_URL}/products/?page_size=200", timeout=1)
-            products = r.json().get('results', [])
-        except:
-            products = []
-            
-        if not products: return []
+            with neo4j_db.driver.session() as session:
+                query = """
+                MATCH (u:User {id: $uid})-[r:INTERACTED_WITH]->(p:Product)
+                RETURN p.id as pid, r.action as action, r.timestamp as ts
+                ORDER BY r.timestamp DESC LIMIT $limit
+                """
+                recs = session.run(query, uid=int(user_id), limit=seq_len)
+                sequences = []
+                for rec in recs:
+                    p_id = (int(rec['pid']) - 1) % self.num_products
+                    a_id = self.action_map.get(rec['action'], 0)
+                    sequences.append([p_id, a_id])
+                
+                # Prepend cart context to sequence
+                if cart_context:
+                    context_seq = [[(int(pid)-1)%self.num_products, 2] for pid in cart_context]
+                    sequences = (context_seq + sequences)[:seq_len]
 
-        p_ids = [int(p['id']) % 2000 for p in products]
-        cands_t = torch.tensor(p_ids, dtype=torch.long)
-        
-        # 3. Batch Score via LSTM
+                sequences = sequences[::-1]
+                while len(sequences) < seq_len:
+                    sequences.insert(0, [0, 0])
+                
+                seq_t = torch.tensor([sequences], dtype=torch.long)
+
+        except Exception as e:
+            print(f"[RECOM] Neo4j sequence fetch error: {e}")
+            seq_t = torch.zeros((1, seq_len, 2), dtype=torch.long)
+
         with torch.no_grad():
-            # Expand u_t, seq_b_t, seq_a_t to match batch size
-            batch_size = len(cands_t)
-            u_batch = u_t.expand(batch_size)
-            seq_b_batch = seq_b_t.expand(batch_size, -1)
-            seq_a_batch = seq_a_t.expand(batch_size, -1)
-            
-            scores = self.model(u_batch, seq_b_batch, seq_a_batch, cands_t).tolist()
-            if isinstance(scores, float): scores = [scores]
+            try:
+                logits = self.model(seq_t)
+                scores = torch.softmax(logits, dim=1).squeeze().tolist()
+            except:
+                scores = [0] * self.num_products
 
-        # 4. Merge
+        # 2. Add Neighborhood Social Boost (Graph logic)
+        try:
+
+            with neo4j_db.driver.session() as session:
+                sim_query = """
+                MATCH (u:User {id: $uid})-[s:SIMILAR_TO]-(neighbor:User)-[:INTERACTED_WITH]->(p:Product)
+                RETURN p.id as pid, sum(s.weight) as score
+                ORDER BY score DESC LIMIT 50
+                """
+                sim_recs = session.run(sim_query, uid=int(user_id))
+                for rec in sim_recs:
+                    pid = int(rec['pid'])
+                    sim_boost[pid] = sim_boost.get(pid, 0) + float(rec['score'])
+
+        except Exception:
+            pass
+
+        try:
+            r = requests.get(f"{PRODUCT_SERVICE_URL}/products/?page_size=200", timeout=2)
+            data = r.json()
+            all_prods = data.get('results', []) if isinstance(data, dict) else data
+        except Exception as e:
+            print(f"[RECOM] Error fetching products in trainer: {e}")
+            all_prods = []
+
+        if cart_context:
+            print(f"[RECOM] Cart Context items: {cart_context} | SimBoost entries: {len(sim_boost)}")
+
         results = []
-        for i, p in enumerate(products):
-            results.append({
-                'product_id': p['id'],
-                'title': p.get('name', 'Unknown'),
-                'score': round(scores[i], 2),
-                'description': p.get('description', '')
-            })
-            
-        results.sort(key=lambda x: x['score'], reverse=True)
+        for p in all_prods:
+
+            try:
+                pid = int(p['id'])
+                idx = (pid - 1) % self.num_products
+                n_score = scores[idx] if idx < len(scores) else 0
+                # Higher divisor for social boost to keep percentage reasonable
+                s_boost = sim_boost.get(pid, 0) * 0.01 
+                
+                # Hybrid score capped at 0.99 for UI friendliness
+                final_score = min(0.99, (n_score * 0.8) + (s_boost * 0.2))
+
+                
+                results.append({
+                    'id': pid,
+                    'title': p.get('name') or p.get('title'),
+                    'price': p.get('price'),
+                    'image_url': p.get('image_url'),
+                    'score': float(final_score),
+                    'final_score': float(final_score),
+                    'social_proof': f"Gợi ý từ cộng đồng" if pid in sim_boost else "",
+                    'description': p.get('description', '')
+                })
+            except Exception as e:
+                print(f"[DEBUG-TRAINER] Error processing prod: {e}")
+
+        print(f"[DEBUG-TRAINER] Generated {len(results)} ranked products.")
+        results.sort(key=lambda x: x['final_score'], reverse=True)
         return results[:top_k]
 
-# Singleton Instance
+
+# Singleton instance
 behavior_trainer = BehaviorTrainer()

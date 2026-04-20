@@ -1,9 +1,12 @@
 from django.urls import path
-from .views import RecommendationApiView, ConsultantChatView, VectorIndexProductsView
+from .views import RecommendationApiView, ConsultantChatView, VectorIndexProductsView, BehaviorExportView, BehaviorTrainView, SearchSuggestApiView
 
 urlpatterns = [
     path('recommendations/', RecommendationApiView.as_view(), name='recommendation_list'),
     path('recommendations/<int:customer_id>/', RecommendationApiView.as_view(), name='recommendation_detail'),
     path('chat/consultant/<int:customer_id>/', ConsultantChatView.as_view(), name='consultant_chat'),
     path('index-kb/', VectorIndexProductsView.as_view(), name='index_kb'),
+    path('export-behavior/', BehaviorExportView.as_view(), name='export_behavior'),
+    path('train-behavior/', BehaviorTrainView.as_view(), name='train_behavior'),
+    path('suggest/', SearchSuggestApiView.as_view(), name='search_suggest'),
 ]

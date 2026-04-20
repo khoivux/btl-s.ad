@@ -1,5 +1,11 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -80,4 +86,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', '') # Cung cấp qua biến môi trường hoặc file .env
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyAv1FGyRYCuvASvWurdtB_ZHsBU8MgJ4Fw') # Cung cấp qua biến môi trường hoặc file .env
